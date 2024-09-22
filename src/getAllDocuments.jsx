@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom';
 import { baseURL } from "./utils";
 import { useEffect, useState } from "react";
 
+import { getOne } from './models/fetch';
+
 export default function GetAllDocuments() {
 
     const [docs, setDocs] = useState([]);
@@ -51,14 +53,23 @@ export default function GetAllDocuments() {
 
 export function ViewDocument() {
     //Use Hook useParams to get parameters.
-    //Fetch should use the API /:id route and not perform a new fetch request
-    let { id } = useParams();
+    const { id } = useParams();
+
+    const [title, setTitle] = useState([]);
+    const [content, setContent] = useState([]);
+
+    (async (id) => {
+        const doc = await getOne(id);
+        setContent(doc.content);
+        setTitle(doc.title);
+    })(id);
 
     return (
     <div>
-        <h1>Title</h1>    
+        <h1>Title: {title}</h1>    
         <ul>
-            <li>{id}</li>
+            <li>ID: {id}</li>
+            <li>Content: {content}</li>
         </ul>
     </div>
     );
