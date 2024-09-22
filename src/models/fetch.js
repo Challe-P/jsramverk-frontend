@@ -15,13 +15,12 @@ export async function getAll() {
     return response;
 }
 
-export async function getOne() {
-    const response = await fetch(baseURL, {
-        headers: {
-            'content-type': 'application/json'
-        },
-        method: 'GET'
-    })
+export async function getOne(id) {
+    const url = `${baseURL}/doc/${id}`;
+    const response = await fetch(url);
+    const json = await response.json();
+
+    return json.data[0];
 }
 
 export async function UpdateDocument(data) {
