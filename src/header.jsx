@@ -1,13 +1,13 @@
 function Header() {
     return (
-    <header>
-        {
-            <div>
-                <a href="/"><h1>Home</h1></a>
-                <a href="/update"><h1>Update</h1></a>
-            </div>
-        }
-    </header>
+        <header>
+            {
+                <div>
+                    <a href="/"><h1>Home</h1></a>
+                    <a href="/new"><h1>New</h1></a>
+                </div>
+            }
+        </header>
     );
 }
 
