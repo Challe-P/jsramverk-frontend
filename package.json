@@ -11,6 +11,7 @@
     "@types/node": "^16.18.108",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
+    "globals": "^15.9.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "^5.0.1",
@@ -22,7 +23,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && rsync -av --delete build/ alpt22@ssh.student.bth.se:www/editor"
+    "deploy": "npm run build && rsync -av --delete build/ alpt22@ssh.student.bth.se:www/editor",
+    "lint": "eslint src/**/*{js,jsx}",
+    "lint:fix": "eslint src/**/*{js,jsx} --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -43,6 +46,9 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.36.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "react-hook-form": "^7.53.0",
     "react-router-dom": "^6.26.2"
   }
