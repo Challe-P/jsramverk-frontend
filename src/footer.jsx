@@ -5,7 +5,7 @@ function Footer() {
                 <p className="copyright">&copy; Challe_P and narwhal</p>
             }
         </footer>
-    )
+    );
 }
 
 export default Footer;
