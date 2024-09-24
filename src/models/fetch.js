@@ -67,5 +67,5 @@ export async function removeOne(id) {
         method: 'POST',
     });
 
-    console.log(response);
+    return response
 }
