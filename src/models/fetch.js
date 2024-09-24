@@ -23,9 +23,9 @@ export async function getOne(id) {
     return json.data[0];
 }
 
-export async function UpdateDocument(data) {
+export async function updateDocument(data) {
     const updateBody = {
-        "id": data._id,
+        "id": data.id,
         "title": data.title,
         "content": data.content,
     };
@@ -55,7 +55,7 @@ export async function addOne(data) {
         method: 'POST',
     });
 
-    console.log(response);
+    return response;
 }
 
 export async function removeOne(id) {

@@ -1,9 +1,11 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
 import { addOne } from "../models/fetch";
-// import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 export function NewForm() {
+    const navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
@@ -12,8 +14,11 @@ export function NewForm() {
     } = useForm();
 
     const OnSubmit = async (data) => {
+        // Should navigate to newly created document, but for some reason the ID isn's sent back. Check backend.
         console.log("Data: ", data);
-        await addOne(data);
+        const response = await addOne(data);
+        console.log(response);
+        //navigate("/");
     };
 
     console.log(watch("content")); // watch input value by passing the name of it
