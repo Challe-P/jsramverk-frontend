@@ -14,10 +14,14 @@ export function UpdateForm() {
     const navigate = useNavigate();
 
     (async (id) => {
-        const doc = await getOne(id);
+        try {
+            const doc = await getOne(id);
 
-        setContent(doc.content);
-        setTitle(doc.title);
+            setContent(doc.content);
+            setTitle(doc.title);
+        } catch (error) {
+            console.log(error);
+        }
     })(id);
 
     const {
@@ -49,7 +53,7 @@ export function UpdateForm() {
             console.log("Something went wrong");
             console.log(error);
         }
-    }
+    };
 
     console.log(watch("content")); // watch input value by passing the name of it
 
