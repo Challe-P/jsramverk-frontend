@@ -38,19 +38,17 @@ export function UpdateForm() {
         try {
             const response = await removeOne(id);
             console.log(response);
-            /*
-            if (response.status === 410) {
+            
+            if (response.status === 200) {
                 navigate("/");
             } else {
                 console.log("Server issues.")
                 console.log(response);
             }
-                */
         } catch (error) {
             console.log("Something went wrong");
             console.log(error);
         }
-        
     }
 
     console.log(watch("content")); // watch input value by passing the name of it
