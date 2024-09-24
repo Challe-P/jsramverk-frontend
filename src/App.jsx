@@ -10,13 +10,13 @@ import {
 // Import React components
 import Header from './header.jsx';
 import Footer from './footer.jsx';
-import Doc from './doc.jsx';
 import GetAllDocuments from './getAllDocuments.jsx';
 import { ViewDocument } from './single-doc.jsx';
+import NewDoc from './new-doc.jsx';
+import UpdateDoc from './update-doc.jsx';
 
 // Import React styling
 import './App.css';
-import { NewForm } from './forms/forms';
 
 export default function App() {
     return (
@@ -26,13 +26,11 @@ export default function App() {
                 <Header />
                 <Routes>
 
-                    <Route path="/update" element={<Doc />} />
-
                     <Route path="/" element={<GetAllDocuments />} />
 
-                    <Route path="/:id" element={<ViewDocument />} />
+                    <Route path="/:id" element={<UpdateDoc />} />
 
-                    <Route path="/new" element={<NewForm />} />
+                    <Route path="/new" element={<NewDoc />} />
 
                 </Routes>
                 <Footer />

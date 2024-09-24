@@ -19,7 +19,6 @@ export default function GetAllDocuments() {
                 })
                 .then((res) => {
                     setDocs(res.data);
-                    console.log(docs);
                 })
                 .then(() => {
                     return docs.map((doc) => {
@@ -32,7 +31,9 @@ export default function GetAllDocuments() {
                 });
         }, []);
 
-        const docItems = docs.map(doc => <li><a href={doc._id}>{doc.title}</a></li>); //should be an array of JSX nodes
+        let contentMaxLength = 40;
+
+        const docItems = docs.map(doc => <li><a href={doc._id}>{doc.title}</a><p>{doc.content.slice(0, contentMaxLength)}...</p></li>); //should be an array of JSX nodes
 
         return <ul>{docItems}</ul>;
     } catch (error) {
