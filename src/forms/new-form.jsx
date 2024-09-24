@@ -17,8 +17,8 @@ export function NewForm() {
         // Should navigate to newly created document, but for some reason the ID isn's sent back. Check backend.
         console.log("Data: ", data);
         const response = await addOne(data);
-        console.log(response);
-        //navigate("/");
+        const id = await response.json();
+        navigate("/" + id);
     };
 
     console.log(watch("content")); // watch input value by passing the name of it
