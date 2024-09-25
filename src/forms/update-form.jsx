@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from "react-hook-form";
 import { updateDocument, getOne, removeOne } from "../models/fetch";
 import { useParams } from 'react-router-dom';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 
 export function UpdateForm() {
@@ -13,16 +13,21 @@ export function UpdateForm() {
     const [content, setContent] = useState([]);
     const navigate = useNavigate();
 
-    (async (id) => {
-        try {
-            const doc = await getOne(id);
+    useEffect (() => {
+        const fetchData = async () => {
+            try {
+                console.log('Fetching data...');
+                const doc = await getOne(id);
 
-            setContent(doc.content);
-            setTitle(doc.title);
-        } catch (error) {
-            console.log(error);
-        }
-    })(id);
+                setContent(doc.content);
+                setTitle(doc.title);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchData();
+    }, [id]);
 
     const {
         register,
@@ -54,8 +59,6 @@ export function UpdateForm() {
             console.log(error);
         }
     };
-
-    console.log(watch("content")); // watch input value by passing the name of it
 
     return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
