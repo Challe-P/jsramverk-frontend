@@ -1,42 +1,41 @@
 import React from 'react';
 import logo from './logo.svg';
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link
 } from "react-router-dom";
 
 // Import React components
 import Header from './header.jsx';
 import Footer from './footer.jsx';
-import Doc from './doc.jsx';
 import GetAllDocuments from './getAllDocuments.jsx';
-import { ViewDocument } from './getAllDocuments.jsx';
+import { ViewDocument } from './single-doc.jsx';
+import NewDoc from './new-doc.jsx';
+import UpdateDoc from './update-doc.jsx';
 
 // Import React styling
 import './App.css';
 
 export default function App() {
+    return (
+        <Router>
 
-  return (
-    <Router>
+            <div className="App">
+                <Header />
+                <Routes>
 
-    <div className="App">
-      <Header />
-      <Routes>
+                    <Route path="/" element={<GetAllDocuments />} />
 
-        <Route path="/update" element={<Doc />} />
+                    <Route path="/:id" element={<UpdateDoc />} />
 
-        <Route path="/" element={<GetAllDocuments />} />
+                    <Route path="/new" element={<NewDoc />} />
 
-        <Route path="/:id" element={<ViewDocument />} />
-        
+                </Routes>
+                <Footer />
+            </div>
 
-      </Routes>
-      <Footer />
-    </div>
-
-    </Router>
-  );
+        </Router>
+    );
 }
