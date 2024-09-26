@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import {
     BrowserRouter as Router,
     Routes,
@@ -28,7 +27,7 @@ export default function App() {
 
                     <Route path="/" element={<GetAllDocuments />} />
 
-                    <Route path="/:id" element={<UpdateDoc />} />
+                    <Route path="/id/:id" element={<UpdateDoc />} />
 
                     <Route path="/new" element={<NewDoc />} />
 

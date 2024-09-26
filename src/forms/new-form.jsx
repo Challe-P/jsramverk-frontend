@@ -18,7 +18,7 @@ export function NewForm() {
         console.log("Data: ", data);
         const response = await addOne(data);
         const id = await response.json();
-        navigate("/" + id);
+        navigate("/id/" + id);
     };
 
     console.log(watch("content")); // watch input value by passing the name of it
