@@ -2,7 +2,7 @@ import { baseURL } from "../utils";
 
 /**
  * Fetch all documents from cloud database at baseURL
- * @returns
+ * @returns {object} JSON Response object.
  */
 export async function getAll() {
     const response = await fetch(baseURL, {
