@@ -16,7 +16,6 @@ export function UpdateForm() {
     useEffect (() => {
         const fetchData = async () => {
             try {
-                console.log('Fetching data...');
                 const doc = await getOne(id);
 
                 setContent(doc.content);

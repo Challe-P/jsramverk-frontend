@@ -33,7 +33,7 @@ export default function GetAllDocuments() {
 
         let contentMaxLength = 40;
 
-        const docItems = docs.map(doc => <li key={doc._id}><a href={doc._id}>{doc.title}</a><p>{doc.content.slice(0, contentMaxLength)}[...]</p></li>); //should be an array of JSX nodes
+        const docItems = docs.map(doc => <li key={doc._id}><a href={'/id/' + doc._id}>{doc.title}</a><p>{doc.content.slice(0, contentMaxLength)}[...]</p></li>); //should be an array of JSX nodes
 
         return <ul>{docItems}</ul>;
     } catch (error) {
