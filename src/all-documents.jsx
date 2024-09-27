@@ -1,7 +1,11 @@
 //Hooks
-
 import { useEffect, useState } from "react";
+
+//Utility functions
 import { getAll } from "./models/fetch";
+
+//Components
+import DocContent from "./doc-content";
 
 export default function AllDocuments() {
     const [docs, setDocs] = useState([]);
@@ -19,15 +23,13 @@ export default function AllDocuments() {
                 };
             fetchData();
         }, []);
-        docs.map((doc) => {
-            console.log(doc);
-            <li> {doc._id}, {doc.title}, {doc.content}</li>;
-        });
 
-        let contentMaxLength = 40;
-
-        const docItems = docs.map(doc => <li key={doc._id}><a href={'/id/' + doc._id}>{doc.title}</a>
-        <p>{doc.content.slice(0, contentMaxLength)}[...]</p></li>); //should be an array of JSX nodes
+        const docItems = docs.map(doc => 
+            <li key={doc._id}>
+                <a href={'/id/' + doc._id}>{doc.title}</a>
+                <DocContent doccontent={doc.content} />
+            </li>
+        );
 
         return <ul>{docItems}</ul>;
     } catch (error) {
