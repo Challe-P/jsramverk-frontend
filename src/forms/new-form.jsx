@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { addOne } from "../models/fetch";
 import { useNavigate } from 'react-router-dom';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export function NewForm() {
     const navigate = useNavigate();
+    const [value, setValue] = useState('');
 
     const {
         register,
@@ -14,7 +17,7 @@ export function NewForm() {
     } = useForm();
 
     const onSubmit = async (data) => {
-        // Should navigate to newly created document, but for some reason the ID isn's sent back. Check backend.
+        data.content = value;
         console.log("Data: ", data);
         const response = await addOne(data);
         const id = await response.json();
@@ -30,8 +33,7 @@ export function NewForm() {
             <input id="title" type="text" name="title" {...register("title")} />
 
             {/* include validation with required or other standard HTML validation rules */}
-            <label htmlFor="content">Content</label>
-            <input id="content" type="textarea" name="content" {...register("content")} />
+            <ReactQuill ReactQuill theme="snow" value={value} onChange={setValue} />
             <input type="submit" value="Create document" />
         </form>
     );
