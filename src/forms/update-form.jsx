@@ -20,7 +20,8 @@ export function UpdateForm() {
                 setContent(doc.content);
                 setTitle(doc.title);
             } catch (error) {
-                console.log(error);
+                console.error(error);
+                navigate("/");
             }
         };
 
@@ -34,7 +35,7 @@ export function UpdateForm() {
         formState: { errors },
     } = useForm();
 
-    const OnSubmit = async (data) => {
+    const onSubmit = async (data) => {
         console.log("Data: ", data);
         const response = await updateDocument(data);
         console.log(response);
@@ -49,18 +50,18 @@ export function UpdateForm() {
             if (response.status === 200) {
                 navigate("/");
             } else {
-                console.log("Server issues.")
-                console.log(response);
+                console.log("Server issues.");
+                console.error(response);
             }
         } catch (error) {
             console.log("Something went wrong");
-            console.log(error);
+            console.error(error);
         }
     };
 
     return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
-        <form onSubmit={handleSubmit(OnSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
             {/* register your input into the hook by invoking the "register" function */}
             <label htmlFor="title">Title</label>
             <input id="title" type="text" name="title" defaultValue={title} {...register("title")} />
