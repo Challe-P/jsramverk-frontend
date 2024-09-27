@@ -17,7 +17,6 @@ export function UpdateForm() {
         const fetchData = async () => {
             try {
                 const doc = await getOne(id);
-
                 setContent(doc.content);
                 setTitle(doc.title);
             } catch (error) {
@@ -64,11 +63,11 @@ export function UpdateForm() {
         <form onSubmit={handleSubmit(OnSubmit)}>
             {/* register your input into the hook by invoking the "register" function */}
             <label htmlFor="title">Title</label>
-            <input type="text" name="title" defaultValue={title} {...register("title")} />
+            <input id="title" type="text" name="title" defaultValue={title} {...register("title")} />
 
             {/* include validation with required or other standard HTML validation rules */}
             <label htmlFor="content">Content</label>
-            <input type="textarea" name="content" defaultValue={content} {...register("content")} />
+            <input id="content" type="textarea" name="content" defaultValue={content} {...register("content")} />
             <input type="text" name="id" hidden defaultValue={id} {...register("id")}/>
             <input type="submit" value="Save changes" />
             <button type="button" onClick={handleDelete}>Delete document</button>
