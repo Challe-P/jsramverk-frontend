@@ -4,6 +4,7 @@ import NewDoc from '../new-doc.jsx';
 import { addOne } from "../models/fetch.js";
 import { useNavigate } from 'react-router-dom';
 
+
 // Mock the navigate function
 jest.mock('react-router-dom', () => ({
     useNavigate: jest.fn(),
@@ -16,6 +17,7 @@ jest.mock("../models/fetch", () => ({
 }));
 
 describe('Tests the new document component', () => {
+
     afterAll(() => {
         jest.clearAllMocks();
     });
