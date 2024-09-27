@@ -9,7 +9,7 @@ import {
 // Import React components
 import Header from './header.jsx';
 import Footer from './footer.jsx';
-import GetAllDocuments from './getAllDocuments.jsx';
+import AllDocuments from './all-documents.jsx';
 import NewDoc from './new-doc.jsx';
 import UpdateDoc from './update-doc.jsx';
 
@@ -24,7 +24,7 @@ export default function App() {
                 <Header />
                 <Routes>
 
-                    <Route path="/" element={<GetAllDocuments />} />
+                    <Route path="/" element={<AllDocuments />} />
 
                     <Route path="/id/:id" element={<UpdateDoc />} />
 

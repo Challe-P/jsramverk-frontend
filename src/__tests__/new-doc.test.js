@@ -18,7 +18,12 @@ jest.mock("../models/fetch", () => ({
 
 describe('Tests the new document component', () => {
 
+    beforeAll(() => {
+        jest.spyOn(console, 'log').mockImplementation(jest.fn());
+    });
+
     afterAll(() => {
+        global.console.log.mockRestore();
         jest.clearAllMocks();
     });
 

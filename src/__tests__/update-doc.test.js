@@ -22,9 +22,11 @@ describe('UpdateDoc', () => {
 
     beforeAll(() => {
         jest.spyOn(console, 'error').mockImplementation(jest.fn());
+        jest.spyOn(console, 'log').mockImplementation(jest.fn());
     });
 
     afterAll(() => {
+        global.console.log.mockRestore();
         global.console.error.mockRestore();
         jest.clearAllMocks();
     });
