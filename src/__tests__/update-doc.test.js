@@ -35,12 +35,11 @@ describe('UpdateDoc', () => {
         useParams.mockReturnValue({id: "091823901283"});
         const mockResponse = {title: "Fake title", content: "Fake content"};
         getOne.mockResolvedValue(mockResponse);
-
         await act(async () => {
             render(<UpdateDoc />);
         });
         expect(screen.getByLabelText('Title')).toHaveValue('Fake title');
-        expect(screen.getByLabelText('Content')).toHaveValue('Fake content');
+        expect(document.getElementsByClassName('ql-editor')[0]).toContain('Fake content');
     });
 
     test('update document', async () => {
