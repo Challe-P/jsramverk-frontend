@@ -23,7 +23,8 @@
     "eject": "react-scripts eject",
     "deploy": "npm run build && rsync -av --delete build/ alpt22@ssh.student.bth.se:www/editor",
     "lint": "eslint src/**/*{js,jsx}",
-    "lint:fix": "eslint src/**/*{js,jsx} --fix"
+    "lint:fix": "eslint src/**/*{js,jsx} --fix",
+    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage"
   },
   "eslintConfig": {
     "extends": [

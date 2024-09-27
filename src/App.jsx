@@ -10,7 +10,6 @@ import {
 import Header from './header.jsx';
 import Footer from './footer.jsx';
 import GetAllDocuments from './getAllDocuments.jsx';
-import { ViewDocument } from './single-doc.jsx';
 import NewDoc from './new-doc.jsx';
 import UpdateDoc from './update-doc.jsx';
 
