@@ -4,10 +4,13 @@ import { updateDocument, getOne, removeOne } from "../models/fetch";
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
 
 export function UpdateForm() {
     // Den här hämtar datan hela tiden. Borde hämta en gång och sen låta det vara? Iof när socketen ska igång är det ju bra.
-
+    const [value, setValue] = useState('');
     const { id } = useParams();
     const [title, setTitle] = useState([]);
     const [content, setContent] = useState([]);
@@ -16,13 +19,12 @@ export function UpdateForm() {
     useEffect (() => {
         const fetchData = async () => {
             try {
-                console.log('Fetching data...');
                 const doc = await getOne(id);
-
-                setContent(doc.content);
+                setValue(doc.content);
                 setTitle(doc.title);
             } catch (error) {
-                console.log(error);
+                console.error(error);
+                navigate("/");
             }
         };
 
@@ -36,7 +38,8 @@ export function UpdateForm() {
         formState: { errors },
     } = useForm();
 
-    const OnSubmit = async (data) => {
+    const onSubmit = async (data) => {
+        data.content = value;
         console.log("Data: ", data);
         const response = await updateDocument(data);
         console.log(response);
@@ -51,25 +54,24 @@ export function UpdateForm() {
             if (response.status === 200) {
                 navigate("/");
             } else {
-                console.log("Server issues.")
-                console.log(response);
+                console.log("Server issues.");
+                console.error(response);
             }
         } catch (error) {
             console.log("Something went wrong");
-            console.log(error);
+            console.error(error);
         }
     };
 
     return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
-        <form onSubmit={handleSubmit(OnSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
             {/* register your input into the hook by invoking the "register" function */}
             <label htmlFor="title">Title</label>
-            <input type="text" name="title" defaultValue={title} {...register("title")} />
+            <input id="title" type="text" name="title" defaultValue={title} {...register("title")} />
 
             {/* include validation with required or other standard HTML validation rules */}
-            <label htmlFor="content">Content</label>
-            <input type="textarea" name="content" defaultValue={content} {...register("content")} />
+            <ReactQuill ReactQuill aria-label="content" id="content" theme="snow" value={value} onChange={setValue} />
             <input type="text" name="id" hidden defaultValue={id} {...register("id")}/>
             <input type="submit" value="Save changes" />
             <button type="button" onClick={handleDelete}>Delete document</button>

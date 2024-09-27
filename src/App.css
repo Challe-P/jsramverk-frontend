@@ -13,6 +13,39 @@
   }
 }
 
+.quill {
+  max-width: 1000px;
+  margin: 20px auto;
+  border: 1px solid black;
+}
+
+ul {
+  list-style: none;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+li {
+  max-width: 600px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+li a {
+  font-size: 1.6rem;
+}
+
+label {
+  margin-right: 5px;
+  font-size: 1.6rem;
+}
+
+
+
+.ql-editor p {
+  height: 200px;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

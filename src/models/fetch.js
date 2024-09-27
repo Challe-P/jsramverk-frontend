@@ -12,7 +12,7 @@ export async function getAll() {
         method: 'GET',
     });
 
-    return response;
+    return response.json();
 }
 
 export async function getOne(id) {
