@@ -39,6 +39,7 @@ export function UpdateForm() {
     } = useForm();
 
     const onSubmit = async (data) => {
+        data.content = value;
         console.log("Data: ", data);
         const response = await updateDocument(data);
         console.log(response);
@@ -70,7 +71,7 @@ export function UpdateForm() {
             <input id="title" type="text" name="title" defaultValue={title} {...register("title")} />
 
             {/* include validation with required or other standard HTML validation rules */}
-            <ReactQuill ReactQuill id="content" theme="snow" value={value} onChange={setValue} />
+            <ReactQuill ReactQuill aria-label="content" id="content" theme="snow" value={value} onChange={setValue} />
             <input type="text" name="id" hidden defaultValue={id} {...register("id")}/>
             <input type="submit" value="Save changes" />
             <button type="button" onClick={handleDelete}>Delete document</button>
