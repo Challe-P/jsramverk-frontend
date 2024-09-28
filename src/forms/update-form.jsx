@@ -10,18 +10,28 @@ import 'react-quill/dist/quill.snow.css';
 
 export function UpdateForm() {
     // Den här hämtar datan hela tiden. Borde hämta en gång och sen låta det vara? Iof när socketen ska igång är det ju bra.
-    const [value, setValue] = useState('');
     const { id } = useParams();
-    const [title, setTitle] = useState([]);
-    const [content, setContent] = useState([]);
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
     const navigate = useNavigate();
-
+    
+    const {
+        register,
+        handleSubmit,
+        watch,
+        setValue,
+        control,
+        formState: { errors },
+    } = useForm();
+    
     useEffect (() => {
         const fetchData = async () => {
             try {
                 const doc = await getOne(id);
-                setValue(doc.content);
+                setContent(doc.content);
                 setTitle(doc.title);
+                setValue("title", doc.title);
+                setValue("content", doc.content); 
             } catch (error) {
                 console.error(error);
                 navigate("/");
@@ -29,17 +39,15 @@ export function UpdateForm() {
         };
 
         fetchData();
-    }, [id]);
+    }, [id, setValue]);
 
-    const {
-        register,
-        handleSubmit,
-        watch,
-        formState: { errors },
-    } = useForm();
+
 
     const onSubmit = async (data) => {
-        data.content = value;
+        data.content = content;
+        if (data.title === "") {
+            data.title = title;
+        };
         console.log("Data: ", data);
         const response = await updateDocument(data);
         console.log(response);
@@ -66,12 +74,9 @@ export function UpdateForm() {
     return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
         <form onSubmit={handleSubmit(onSubmit)}>
-            {/* register your input into the hook by invoking the "register" function */}
             <label htmlFor="title">Title</label>
-            <input id="title" type="text" name="title" defaultValue={title} {...register("title")} />
-
-            {/* include validation with required or other standard HTML validation rules */}
-            <ReactQuill ReactQuill aria-label="content" id="content" theme="snow" value={value} onChange={setValue} />
+            <input id="title" type="text" defaultValue={title} {...register('title')} />
+            <ReactQuill ReactQuill theme="snow" id='content' value={content} onChange={setContent} />
             <input type="text" name="id" hidden defaultValue={id} {...register("id")}/>
             <input type="submit" value="Save changes" />
             <button type="button" onClick={handleDelete}>Delete document</button>

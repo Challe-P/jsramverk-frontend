@@ -33,7 +33,7 @@ export function NewForm() {
             <input id="title" type="text" name="title" {...register("title")} />
 
             {/* include validation with required or other standard HTML validation rules */}
-            <ReactQuill ReactQuill theme="snow" value={value} onChange={setValue} />
+            <ReactQuill ReactQuill theme="snow" id='content' value={value} onChange={setValue} />
             <input type="submit" value="Create document" />
         </form>
     );

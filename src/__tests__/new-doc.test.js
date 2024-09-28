@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import NewDoc from '../new-doc.jsx';
 import { addOne } from "../models/fetch.js";
 import { useNavigate } from 'react-router-dom';
+import userEvent from "@testing-library/user-event";
 
 
 // Mock the navigate function
@@ -35,7 +36,7 @@ describe('Tests the new document component', () => {
         render(<NewDoc />);
         await screen.findByText('Title');
         expect(screen.getAllByRole('textbox')[0]).toHaveProperty('name', 'title');
-        expect(screen.getAllByRole('textbox')[1]).toHaveProperty('name', 'content');
+        expect(document.getElementsByClassName('ql-editor')[0]).toBeInTheDocument();
     });
 
     test('submits form and navigates', async () => {
@@ -49,16 +50,19 @@ describe('Tests the new document component', () => {
         render(<NewDoc />);
         
         fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'My Document' } });
-        fireEvent.change(screen.getByLabelText(/content/i), { target: { value: 'This is the content' } });
+        // For some reason there needs to be a space after, or else it cut's of the whole word.
+        userEvent.type(document.getElementsByClassName('ql-editor')[0], "This is the content ");
 
         fireEvent.click(screen.getByRole('button', { name: /create document/i }));
 
+        
         await waitFor(() => {
             expect(addOne).toHaveBeenCalledWith({
                 title: 'My Document',
-                content: 'This is the content',
+                content: '<p>This is the content</p>',
             });
             expect(mockNavigate).toHaveBeenCalledWith('/id/123');
         });
+        
     });
 });
