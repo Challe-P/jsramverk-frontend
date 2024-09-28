@@ -31,7 +31,7 @@ export default function AllDocuments() {
             </li>
         );
 
-        return <ul>{docItems}</ul>;
+        return <ul className="docs">{docItems}</ul>;
     } catch (error) {
         console.error("An error occurred.", error);
         return (

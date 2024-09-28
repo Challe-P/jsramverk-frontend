@@ -22,11 +22,13 @@
 ul {
   list-style: none;
   margin: 0 auto;
-  max-width: 600px;
+  max-width: 80%;
 }
 
 li {
-  max-width: 600px;
+  border-bottom: 1px solid #c2c4c9;
+  padding: 1rem;
+  max-width: 100%;
   text-align: left;
   margin-bottom: 20px;
 }
@@ -35,12 +37,14 @@ li a {
   font-size: 1.6rem;
 }
 
+.doc-content-div {
+  padding-top: 2rem;
+}
+
 label {
   margin-right: 5px;
   font-size: 1.6rem;
 }
-
-
 
 .ql-editor {
   min-height: 200px;
@@ -68,4 +72,10 @@ label {
   to {
     transform: rotate(360deg);
   }
+}
+
+.docs {
+  padding: 2rem;
+  border-radius: 15px;
+  background-color: rgb(236, 229, 216);
 }
