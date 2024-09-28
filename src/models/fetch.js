@@ -38,7 +38,7 @@ export async function updateDocument(data) {
         method: 'POST', //PUT gives a 404
     });
 
-    console.log(response);
+    return response;
 }
 
 export async function addOne(data) {

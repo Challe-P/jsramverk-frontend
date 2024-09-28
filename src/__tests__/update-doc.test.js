@@ -1,8 +1,11 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act, findByText } from '@testing-library/react';
 import { getOne, updateDocument, removeOne } from "../models/fetch.js";
 import { useParams, useNavigate } from 'react-router-dom';
 import UpdateDoc from '../update-doc.jsx';
+import userEvent from "@testing-library/user-event";
+import { Quill } from 'react-quill';
+
 
 
 // Mock the navigate function for delete function
@@ -39,7 +42,7 @@ describe('UpdateDoc', () => {
             render(<UpdateDoc />);
         });
         expect(screen.getByLabelText('Title')).toHaveValue('Fake title');
-        expect(document.getElementsByClassName('ql-editor')[0]).toContain('Fake content');
+        expect(document.getElementsByClassName('ql-editor')[0].textContent).toContain('Fake content');
     });
 
     test('update document', async () => {
@@ -51,14 +54,21 @@ describe('UpdateDoc', () => {
             render(<UpdateDoc />);
         });
 
-        await act(async () => {
+        await act( async () => {
+            await screen.findByText("Fake content");
             fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'Fake updated title' } });
-            fireEvent.change(screen.getByLabelText(/content/i), { target: { value: 'Fake updated content' } });
-            fireEvent.click(screen.getByRole('button', { name: /Save changes/i }));
+            let quill = Quill.find(document.getElementsByClassName('ql-container')[0]);
+            expect(quill).toBeInstanceOf(Quill);
+            quill.setText("Fake updated content");
         });
+
+        await act( async () => {
+            await screen.findByText("Fake updated content");
+            fireEvent.click(screen.getByRole('button', { name: /Save changes/i }));       
+        })
         expect(screen.getByLabelText('Title')).toHaveValue('Fake updated title');
-        expect(screen.getByLabelText('Content')).toHaveValue('Fake updated content');
-        expect(updateDocument).toHaveBeenCalledWith({"content": "Fake updated content", "id": "091823901283", "title": "Fake updated title"});
+        expect(document.getElementsByClassName('ql-editor')[0].textContent).toContain('Fake updated content');
+        expect(updateDocument).toHaveBeenCalledWith({"content": "<p>Fake updated content</p>", "id": "091823901283", "title": "Fake updated title"});
     });
 
     test('delete document', async () => {

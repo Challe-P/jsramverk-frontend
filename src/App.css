@@ -42,8 +42,8 @@ label {
 
 
 
-.ql-editor p {
-  height: 200px;
+.ql-editor {
+  min-height: 200px;
 }
 
 .App-header {
