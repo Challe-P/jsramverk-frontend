@@ -1,0 +1,18 @@
+form {
+    padding: 2rem;
+    border-radius: 15px;
+    background-color: rgb(236, 229, 216);
+    margin: 1rem 2rem;
+    label {
+        font-size: 1rem;
+    }
+}
+
+.ql-editor {
+    background-color: #fff;
+}
+
+#title {
+    font-size: 1rem;
+}
+

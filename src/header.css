@@ -1,0 +1,23 @@
+.top {
+    display: flex;
+    gap: 10px;
+    row-gap: 10px;
+    column-gap: 10px;
+    justify-content: space-between;
+    margin-left: 3rem;
+    margin-right: 4rem;
+    img {
+        margin: 1rem;
+        border-radius: 15px;
+    }
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    a {
+        text-decoration: none;
+    }
+}
