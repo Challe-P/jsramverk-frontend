@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./header.css";
 
 function Header() {
@@ -5,10 +6,10 @@ function Header() {
         <header>
             {
                 <div className="top">
-                    <a href="/"><img src='/images/logo192.png' /></a>
+                    <Link to="/"><img src='logo192.png' /></Link>
                     <div className="nav">
-                    <a href="/"><h1>Home</h1></a>
-                    <a href="/new"><h1>New</h1></a>
+                    <Link to="/"><h1>Home</h1></Link>
+                    <Link to="/new"><h1>New</h1></Link>
                 </div>
                 </div>
             }
