@@ -1,9 +1,8 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act, findByText } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { getOne, updateDocument, removeOne } from "../models/fetch.js";
 import { useParams, useNavigate } from 'react-router-dom';
 import UpdateDoc from '../update-doc.jsx';
-import userEvent from "@testing-library/user-event";
 import { Quill } from 'react-quill';
 
 
@@ -65,7 +64,8 @@ describe('UpdateDoc', () => {
         await act( async () => {
             await screen.findByText("Fake updated content");
             fireEvent.click(screen.getByRole('button', { name: /Save changes/i }));       
-        })
+        });
+    
         expect(screen.getByLabelText('Title')).toHaveValue('Fake updated title');
         expect(document.getElementsByClassName('ql-editor')[0].textContent).toContain('Fake updated content');
         expect(updateDocument).toHaveBeenCalledWith({"content": "<p>Fake updated content</p>", "id": "091823901283", "title": "Fake updated title"});
