@@ -6,6 +6,7 @@ import { getAll } from "./models/fetch";
 
 //Components
 import DocContent from "./doc-content";
+import { Link } from "react-router-dom";
 
 export default function AllDocuments() {
     const [docs, setDocs] = useState([]);
@@ -26,12 +27,12 @@ export default function AllDocuments() {
 
         const docItems = docs.map(doc => 
             <li key={doc._id}>
-                <a href={'/id/' + doc._id}>{doc.title}</a>
+                <Link to={'/id/' + doc._id}>{doc.title}</Link>
                 <DocContent doccontent={doc.content} />
             </li>
         );
 
-        return <ul>{docItems}</ul>;
+        return <ul className="docs">{docItems}</ul>;
     } catch (error) {
         console.error("An error occurred.", error);
         return (
