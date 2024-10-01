@@ -2,7 +2,7 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "/~alpt22/editor",
   "dependencies": {
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
