@@ -17,6 +17,7 @@ export function NewForm() {
     } = useForm();
 
     const onSubmit = async (data) => {
+
         data.content = value;
         console.log("Data: ", data);
         const response = await addOne(data);
@@ -30,7 +31,20 @@ export function NewForm() {
         <form onSubmit={handleSubmit(onSubmit)}>
             {/* register your input into the hook by invoking the "register" function */}
             <label htmlFor="title">Title</label>
-            <input id="title" type="text" name="title" {...register("title")} />
+            <input 
+                id="title"
+                aria-invalid={errors.name ? "true" : "false"} 
+                type="text" 
+                name="title" 
+                required="true"
+                {...register("title")} 
+                onInvalid={e => {
+                    e.currentTarget.setCustomValidity("A document title is required");
+                }}
+                onChange={e => {
+                    e.currentTarget.setCustomValidity("");
+                }}
+            />
 
             {/* include validation with required or other standard HTML validation rules */}
             <ReactQuill ReactQuill theme="snow" id='content' value={value} onChange={setValue} />
