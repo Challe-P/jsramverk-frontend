@@ -5,8 +5,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import UpdateDoc from '../update-doc.jsx';
 import { Quill } from 'react-quill';
 
-
-
 // Mock the navigate function for delete function
 jest.mock('react-router-dom', () => ({
     useNavigate: jest.fn(),

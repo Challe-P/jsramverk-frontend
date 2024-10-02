@@ -16,9 +16,11 @@ import UpdateDoc from './update-doc.jsx';
 // Import React styling
 import './App.css';
 
+const basename = process.env === 'production' ? "/~alpt22/editor" : "";
+
 export default function App() {
     return (
-        <Router basename="/~alpt22/editor">
+        <Router basename={basename}>
 
             <div className="App">
                 <Header />

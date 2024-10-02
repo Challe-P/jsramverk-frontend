@@ -2,6 +2,7 @@ import React from 'react';
 import { getByRole, render, screen, act, getByText } from '@testing-library/react';
 import App from '../App';
 import { getAll } from '../models/fetch';
+import { BrowserRouter } from "react-router-dom";
 
 jest.mock("../models/fetch", () => ({
     getAll: jest.fn(),
