@@ -40,6 +40,7 @@ describe('Tests the new document component', () => {
     });
 
     test('submits form and navigates', async () => {
+        // Setup
         const mockNavigate = jest.fn();
         useNavigate.mockReturnValue(mockNavigate);
         const mockResponse = '123';
@@ -47,15 +48,16 @@ describe('Tests the new document component', () => {
             json: jest.fn().mockResolvedValueOnce(mockResponse),
         });
 
+        // Act
         render(<NewDoc />);
         
-        fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'My Document' } });
-        // For some reason there needs to be a space after, or else it cut's of the whole word.
+        userEvent.type(screen.getByLabelText(/title/i), 'My Document');
+        // For some reason there needs to be a space after, or else it cuts of the whole word.
         userEvent.type(document.getElementsByClassName('ql-editor')[0], "This is the content ");
 
         fireEvent.click(screen.getByRole('button', { name: /create document/i }));
 
-        
+        // Assert
         await waitFor(() => {
             expect(addOne).toHaveBeenCalledWith({
                 title: 'My Document',
@@ -63,6 +65,5 @@ describe('Tests the new document component', () => {
             });
             expect(mockNavigate).toHaveBeenCalledWith('/id/123');
         });
-        
     });
 });

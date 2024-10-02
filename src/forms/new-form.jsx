@@ -36,7 +36,7 @@ export function NewForm() {
                 aria-invalid={errors.name ? "true" : "false"} 
                 type="text" 
                 name="title" 
-                required="true"
+                required={true}
                 {...register("title")} 
                 onInvalid={e => {
                     e.currentTarget.setCustomValidity("A document title is required");
