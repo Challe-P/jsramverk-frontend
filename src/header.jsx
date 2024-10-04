@@ -6,9 +6,11 @@ function Header() {
         <header>
             {
                 <div className="top">
-                    <Link to="/"><img src='logo192.png' /></Link>
+                    <Link to="/"><img className="logo" src='./logo192.png' /></Link>
                     <div className="nav">
                     <Link to="/"><h1>Home</h1></Link>
+                    <Link to="/register"><h1>Register</h1></Link>
+                    <Link to="/login"><h1>Login</h1></Link>
                     <Link to="/new"><h1>New</h1></Link>
                 </div>
                 </div>
