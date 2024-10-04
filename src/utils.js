@@ -1,4 +1,3 @@
-// const baseURL = "https://jsramverk-backend-vima23.azurewebsites.net";
-const baseURL = "http://localhost:1338";
+const baseURL = process.env.NODE_ENV === 'development' ? "http://localhost:1338" : "https://jsramverk-backend-vima23.azurewebsites.net";
 
 export { baseURL };
