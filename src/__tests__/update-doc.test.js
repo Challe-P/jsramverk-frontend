@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { getOne, updateDocument, removeOne } from "../models/fetch.js";
 import { useParams, useNavigate } from 'react-router-dom';
 import UpdateDoc from '../update-doc.jsx';
-import { Quill } from 'react-quill';
+import userEvent from "@testing-library/user-event";
 
 // Mock the navigate function for delete function
 jest.mock('react-router-dom', () => ({
@@ -53,15 +53,17 @@ describe('UpdateDoc', () => {
 
         await act( async () => {
             await screen.findByText("Fake content");
-            fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'Fake updated title' } });
-            let quill = Quill.find(document.getElementsByClassName('ql-container')[0]);
-            expect(quill).toBeInstanceOf(Quill);
-            quill.setText("Fake updated content");
+            userEvent.clear(screen.getByLabelText(/title/i))
+            userEvent.type(screen.getByLabelText(/title/i), 'Fake updated title');
+            userEvent.type(document.getElementsByClassName('ql-editor')[0], "Fake updated content ");
+            document.getElementsByClassName('ql-editor')[0].innerHTML = "Fake updated content";
         });
 
+        
         await act( async () => {
             await screen.findByText("Fake updated content");
-            fireEvent.click(screen.getByRole('button', { name: /Save changes/i }));       
+            console.log(document.getElementsByClassName('ql-editor')[0].innerHTML);
+            fireEvent.click(screen.getByRole('button', { name: /Save changes/i }));
         });
     
         expect(screen.getByLabelText('Title')).toHaveValue('Fake updated title');

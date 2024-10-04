@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { addOne } from "../models/fetch";
 import { useNavigate } from 'react-router-dom';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 
 export function NewForm() {
     const navigate = useNavigate();
