@@ -14,10 +14,16 @@
 
 .nav {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: flex-start;
     align-items: flex-end;
     a {
         text-decoration: none;
+        margin: auto 10px;
     }
+}
+
+.logo {
+    min-height: 100%;
+    min-width: 100%;
 }
