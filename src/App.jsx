@@ -16,8 +16,6 @@ import UpdateDoc from './update-doc.jsx';
 // Import React styling
 import './App.css';
 
-
-
 export default function App() {
     const basename = process.env.NODE_ENV === 'production' ? "/~alpt22/editor" : "";
     return (    

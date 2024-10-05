@@ -4,6 +4,7 @@ import { getOne, updateDocument, removeOne } from "../models/fetch.js";
 import { useParams, useNavigate } from 'react-router-dom';
 import UpdateDoc from '../update-doc.jsx';
 import userEvent from "@testing-library/user-event";
+import Delta from 'quill-delta';
 
 // Mock the navigate function for delete function
 jest.mock('react-router-dom', () => ({
@@ -55,7 +56,7 @@ describe('UpdateDoc', () => {
             await screen.findByText("Fake content");
             userEvent.clear(screen.getByLabelText(/title/i))
             userEvent.type(screen.getByLabelText(/title/i), 'Fake updated title');
-            userEvent.type(document.getElementsByClassName('ql-editor')[0], "Fake updated content ");
+            userEvent.type(document.getElementsByClassName('ql-editor')[0], "Fake updated content");
             document.getElementsByClassName('ql-editor')[0].innerHTML = "Fake updated content";
         });
 
@@ -66,9 +67,11 @@ describe('UpdateDoc', () => {
             fireEvent.click(screen.getByRole('button', { name: /Save changes/i }));
         });
     
+        const sentDelta = new Delta({ops: [{"insert": `Fake updated content\n`}]})
+
         expect(screen.getByLabelText('Title')).toHaveValue('Fake updated title');
         expect(document.getElementsByClassName('ql-editor')[0].textContent).toContain('Fake updated content');
-        expect(updateDocument).toHaveBeenCalledWith({"content": "<p>Fake updated content</p>", "id": "091823901283", "title": "Fake updated title"});
+        expect(updateDocument).toHaveBeenCalledWith({"content": sentDelta, "id": "091823901283", "title": "Fake updated title"});
     });
 
     test('delete document', async () => {
