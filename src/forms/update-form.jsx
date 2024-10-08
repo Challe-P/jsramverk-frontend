@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { updateDocument, getOne, removeOne } from "../models/fetch";
 import { useParams } from 'react-router-dom';
 import { useState, useEffect, useRef } from "react";
@@ -9,14 +9,16 @@ import { io } from "socket.io-client";
 import { baseURL } from "../utils";
 import { CodeEditor } from './code-editor';
 import { QuillEditor } from './quill-editor';
-import Delta from 'quill-delta';
 
 export function UpdateForm() {
     // Den här hämtar datan hela tiden. Borde hämta en gång och sen låta det vara? Iof när socketen ska igång är det ju bra.
     const { id } = useParams();
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-    const [editorMode, setEditorMode] = useState("code")
+    const [editorMode, setEditorMode] = useState("text");
+    const [delta, setDelta] = useState("");
+    const [deltaIsLatest, setDeltaIsLatest] = useState(true);
+    const isFromSocket = useRef(true);
     
     const navigate = useNavigate();
     const socket = useRef(null);
@@ -38,16 +40,15 @@ export function UpdateForm() {
             // Fetches data from atlasDB and sets it
             try {
                 const doc = await getOne(id);
-                /*
-                const delta = new Delta(doc.content);
-                if (delta.ops.length !== 0) {
-                    quillRef.current.getEditor().setContents(delta, 'silent');
-                } else {
-                    quillRef.current.getEditor().setText(doc.content);
-                }
-                    */          
                 setTitle(doc.title);
-                setContent(doc.content);
+                if (typeof(doc.content) === "object") {
+                    setDelta(doc.content);
+                    setEditorMode("text");
+                } else {                    
+                    setContent(doc.content);
+                    setDeltaIsLatest(false);
+                    setEditorMode("code");
+                }
             } catch (error) {
                 console.error(error);
                 navigate("/");
@@ -55,38 +56,61 @@ export function UpdateForm() {
         };
 
         fetchData();
+
+        // Function for incoming socket packages
+        const onDoc = (data) => {
+            isFromSocket.current = true;
+            if (data.user !== socket.current.id)
+            {
+                setEditorMode(data.mode);
+                if (data.mode === "text")
+                {
+                    setDelta(data.content);
+                    setDeltaIsLatest(true);
+                } else {
+                    setContent(data.content);
+                }
+                setTitle(data.title);
+            }
+            isFromSocket.current = false;
+        };
+
         socket.current = io(baseURL);
         socket.current.emit("create", id);
-        const onTitle = (data) => {
-            if (data.user === socket.current.id)
-            {
-                return;
-            }
-            setTitle(data.title);
-        };
-        socket.current.on('doc', onTitle);
+        socket.current.on("doc", onDoc);
+        isFromSocket.current = false;
+
+        return () => {
+            socket.current.off('doc', onDoc);
+            socket.current.disconnect();
+        }
     }, [id, baseURL]);
 
-
-    // Third useEffect, sets up listener for title
-
-    useEffect (() => {
-        setTitle(watchedTitle);
-        const handleTitleChange = () => {
-            socket.current.emit('doc', { id, 'title': watchedTitle,
-                user: socket.current.id})
-        };
-        handleTitleChange();
-    }, [watchedTitle]);
+    // This useEffect sets up the emitter for the socket it doesn't work because it runs on every change, so it becomes an infinite loop
+    // TODO fix this.
+    /*
+    useEffect ((e) => {
+        console.log(e)
+        if (!isFromSocket.current)
+        {
+            let sentContent = content;
+            if (deltaIsLatest) {
+                sentContent = delta;
+            }
+            console.log("Emitting!")
+            socket.current.emit('doc', { id, title: title, content: sentContent, user: socket.current.id, mode: editorMode });
+        }
+    }, [content, title]);
+    */
 
     const onSubmit = async (data) => {
-        // This needs to be changed to handle both code and quill
-
-        //data.content = quillRef.current.editor.getContents();
-        
-        if (data.title === "") {
-            data.title = title;
-        };
+        data.content = content;
+        if (deltaIsLatest)
+        {
+            data.content = delta;
+        }
+        data.title = title;
+        console.log(data)
         const response = await updateDocument(data);
         console.log(response);
     };
@@ -113,18 +137,22 @@ export function UpdateForm() {
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
         <form onSubmit={handleSubmit(onSubmit)}>
             <label htmlFor="title">Title</label>
-            <input id="title" type="text" defaultValue={title} {...register('title')} />
+            <input id="title" type="text" defaultValue={title} onChange={(e) => setTitle(e.target.value)} />
             {editorMode === "text" ? (
                 <QuillEditor
-                socket={socket}
-                id={id}
                 content={content}
+                setContent={setContent}
+                delta={delta}
+                setDelta={setDelta}
+                deltaIsLatest={deltaIsLatest}
+                setDeltaIsLatest={setDeltaIsLatest}
                 />
             ) : (
                 <CodeEditor
-                socket={socket}
-                id={id}
-                content={content} />
+                content={content}
+                setContent={setContent}
+                setDeltaIsLatest={setDeltaIsLatest}
+                />
             ) 
             }
             <input type="text" name="id" hidden defaultValue={id} {...register("id")}/>

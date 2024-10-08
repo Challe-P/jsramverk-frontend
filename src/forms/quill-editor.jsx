@@ -1,45 +1,40 @@
 import React from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import { io } from "socket.io-client";
-import { baseURL } from "../utils";
 import Delta from 'quill-delta';
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
-export function QuillEditor({socket, id}) {
+export function QuillEditor({content, setContent, delta, setDelta, deltaIsLatest, setDeltaIsLatest}) {
     const quillRef = useRef(null);
 
-    // Second useEffect, starts socket and listens for changes
-    useEffect (() => {
-        if (socket.current) {
-        
+    // Loads the data sent from parent properly
+    useEffect(() =>
+    {
+        if (delta && deltaIsLatest) 
+        {
+            quillRef.current.getEditor().setContents(delta, 'silent');
+        } else {
+        const createdDelta = new Delta(content);
+        if (createdDelta.ops.length !== 0) {
+            quillRef.current.getEditor().setContents(createdDelta, 'silent');
+        } else {
+            quillRef.current.getEditor().setText(content);
+        }
+        }
         const handleTextChange = (delta, oldDelta, source) => {
             // Function to handle changes in quill editor
             if (source !== 'user') {
+                quillRef.current.getEditor().updateContents(delta, 'silent')
                 return;
             }
-            socket.current.emit('doc', { id, content: delta, user: socket.current.id });
+            setDelta(quillRef.current.getEditor().getContents());
+            setDeltaIsLatest(true);
+            setContent(quillRef.current.getEditor().getText());
         }
 
         // Listener on quill editor
         quillRef.current.getEditor().on('text-change', handleTextChange);
-
-
-        const onDoc = (data) => {
-            if (data.user === socket.current.id)
-            {
-                return;
-            }
-            const delta = new Delta(data.content);
-            quillRef.current.getEditor().updateContents(delta, 'silent');                
-        };
-
-        socket.current.on("doc", onDoc);
-        return () => {
-            socket.current.off('doc', onDoc);
-        }
-    }
-    }, [baseURL]);
+    }, []);
     
     return (
     <ReactQuill 
