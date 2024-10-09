@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
+import { runCode } from '../models/exec';
 
 export function CodeEditor({ content, setContent, setDelta, setDeltaIsLatest, title, socket, id, setEditorMode, setTitle }) {
 
+    const [codeOutput, setCodeOutput] = useState("");
     // Check if a ViewUpdate contains User Events
     /*
     function isViewUpdateFromUserInput(viewUpdate) {
@@ -50,6 +52,10 @@ export function CodeEditor({ content, setContent, setDelta, setDeltaIsLatest, ti
         socket.emit('doc', { id, content: value, user: socket.id, mode: "code"});
     }
 
+    async function sendCode() {
+        setCodeOutput(await runCode(content));
+    }
+
     useEffect(() => {
         if (socket)
         {
@@ -57,9 +63,17 @@ export function CodeEditor({ content, setContent, setDelta, setDeltaIsLatest, ti
         }
     }, [title]);
     
-    return <CodeMirror 
-            value={content}
-            extensions={[javascript({jsx: true})]} 
-            onChange={onChange}
-            />;
+    return <div>
+                <CodeMirror 
+                    value={content}
+                    extensions={[javascript({jsx: true})]} 
+                    onChange={onChange}
+                />
+                <button type="button" onClick={sendCode}>Run code</button>
+                <div>
+                    <pre className="code-output">
+                        {codeOutput}
+                    </pre>
+                </div>
+            </div>;
 }
