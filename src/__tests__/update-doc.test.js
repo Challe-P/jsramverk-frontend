@@ -34,7 +34,7 @@ describe('UpdateDoc', () => {
 
     test('show document', async () => {
         useParams.mockReturnValue({id: "091823901283"});
-        const mockResponse = {title: "Fake title", content: "Fake content"};
+        const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
         getOne.mockResolvedValue(mockResponse);
         await act(async () => {
             render(<UpdateDoc />);
@@ -45,7 +45,7 @@ describe('UpdateDoc', () => {
 
     test('update document', async () => {
         useParams.mockReturnValue({id: "091823901283"});
-        const mockResponse = {title: "Fake title", content: "Fake content"};
+        const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
         getOne.mockResolvedValue(mockResponse);
 
         await act(async () => {

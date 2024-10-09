@@ -18,7 +18,6 @@ export function UpdateForm() {
     const [editorMode, setEditorMode] = useState("text");
     const [delta, setDelta] = useState("");
     const [deltaIsLatest, setDeltaIsLatest] = useState(true);
-    const isFromSocket = useRef(true);
     
     const navigate = useNavigate();
     const socket = useRef(null);
@@ -32,8 +31,6 @@ export function UpdateForm() {
         formState: { errors },
     } = useForm();
 
-    const watchedTitle = watch('title');
-
     // First useEffect. Fetches data and sets it.
     useEffect (() => {
         const fetchData = async () => {
@@ -43,8 +40,12 @@ export function UpdateForm() {
                 setTitle(doc.title);
                 if (typeof(doc.content) === "object") {
                     setDelta(doc.content);
+                    setDeltaIsLatest(true);
                     setEditorMode("text");
-                } else {                    
+                } else if (doc.mode === "text") {
+                    setContent(doc.content);
+                    setEditorMode("text");
+                } else {
                     setContent(doc.content);
                     setDeltaIsLatest(false);
                     setEditorMode("code");
@@ -57,51 +58,14 @@ export function UpdateForm() {
 
         fetchData();
 
-        // Function for incoming socket packages
-        const onDoc = (data) => {
-            isFromSocket.current = true;
-            if (data.user !== socket.current.id)
-            {
-                setEditorMode(data.mode);
-                if (data.mode === "text")
-                {
-                    setDelta(data.content);
-                    setDeltaIsLatest(true);
-                } else {
-                    setContent(data.content);
-                }
-                setTitle(data.title);
-            }
-            isFromSocket.current = false;
-        };
-
         socket.current = io(baseURL);
         socket.current.emit("create", id);
-        socket.current.on("doc", onDoc);
-        isFromSocket.current = false;
 
         return () => {
-            socket.current.off('doc', onDoc);
+            socket.current.off('doc');
             socket.current.disconnect();
         }
     }, [id, baseURL]);
-
-    // This useEffect sets up the emitter for the socket it doesn't work because it runs on every change, so it becomes an infinite loop
-    // TODO fix this.
-    /*
-    useEffect ((e) => {
-        console.log(e)
-        if (!isFromSocket.current)
-        {
-            let sentContent = content;
-            if (deltaIsLatest) {
-                sentContent = delta;
-            }
-            console.log("Emitting!")
-            socket.current.emit('doc', { id, title: title, content: sentContent, user: socket.current.id, mode: editorMode });
-        }
-    }, [content, title]);
-    */
 
     const onSubmit = async (data) => {
         data.content = content;
@@ -146,12 +110,23 @@ export function UpdateForm() {
                 setDelta={setDelta}
                 deltaIsLatest={deltaIsLatest}
                 setDeltaIsLatest={setDeltaIsLatest}
+                socket={socket.current}
+                title={title}
+                setTitle={setTitle}
+                id={id}
+                setEditorMode={setEditorMode}
                 />
             ) : (
                 <CodeEditor
                 content={content}
                 setContent={setContent}
+                setDelta={setDelta}
                 setDeltaIsLatest={setDeltaIsLatest}
+                title={title}
+                socket={socket.current}
+                setTitle={setTitle}
+                id={id}
+                setEditorMode={setEditorMode}
                 />
             ) 
             }
