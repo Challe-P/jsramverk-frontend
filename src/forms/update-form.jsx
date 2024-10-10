@@ -26,6 +26,7 @@ export function UpdateForm() {
     
     useEffect (() => {
         const fetchData = async () => {
+            console.log("Im going to fetch some data", id);
             try {
                 const doc = await getOne(id);
                 setContent(doc.content);
@@ -33,6 +34,7 @@ export function UpdateForm() {
                 setValue("title", doc.title);
                 setValue("content", doc.content); 
             } catch (error) {
+                console.log("An error, buhu");
                 console.error(error);
                 navigate("/");
             }
