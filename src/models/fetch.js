@@ -1,4 +1,5 @@
 import { baseURL } from "../utils";
+import auth from "./auth.js";
 
 /**
  * Fetch all documents from cloud database at baseURL
@@ -7,7 +8,8 @@ import { baseURL } from "../utils";
 export async function getAll() {
     const response = await fetch(baseURL, {
         headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            'auth-token': auth.token,
         },
         method: 'GET',
     });
@@ -16,9 +18,16 @@ export async function getAll() {
 }
 
 export async function getOne(id) {
+    console.log("fetch getOne with token ", auth.token);
     const url = `${baseURL}/doc/${id}`;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        headers: {
+            'auth-token': auth.token,
+        },
+        method: 'GET',
+    });
     const json = await response.json();
+    console.log("json response. ", json);
 
     return json.data[0];
 }

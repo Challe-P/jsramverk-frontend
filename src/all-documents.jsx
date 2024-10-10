@@ -8,7 +8,11 @@ import { getAll } from "./models/fetch";
 import DocContent from "./doc-content";
 import { Link } from "react-router-dom";
 
+import auth from "./models/auth.js";
+
 export default function AllDocuments() {
+
+    console.log("From view all route", auth.token);
     const [docs, setDocs] = useState([]);
 
     try {
