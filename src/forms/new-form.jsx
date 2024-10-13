@@ -19,11 +19,9 @@ export function NewForm() {
     const onSubmit = async (data) => {
 
         data.content = value;
-        console.log("Data: ", data);
         const response = await addOne(data);
-        const id = await response.json();
-        console.log("Navigating to: /id/" + id);
-        navigate("/id/" + id);
+        let res = await response.json();
+        navigate("/id/" + res.insertedId);
     };
 
     return (

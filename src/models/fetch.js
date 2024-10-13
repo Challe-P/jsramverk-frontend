@@ -18,7 +18,6 @@ export async function getAll() {
 }
 
 export async function getOne(id) {
-    console.log("fetch getOne with token ", auth.token);
     const url = `${baseURL}/doc/${id}`;
     const response = await fetch(url, {
         headers: {
@@ -27,7 +26,6 @@ export async function getOne(id) {
         method: 'GET',
     });
     const json = await response.json();
-    console.log("json response. ", json);
 
     return json.data[0];
 }
@@ -42,7 +40,8 @@ export async function updateDocument(data) {
     const response = await fetch(`${baseURL}/update`, {
         body: JSON.stringify(updateBody),
         headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            'auth-token': auth.token,
         },
         method: 'POST', //PUT gives a 404
     });
@@ -59,7 +58,8 @@ export async function addOne(data) {
     const response = await fetch(`${baseURL}/`, {
         body: JSON.stringify(body),
         headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            'auth-token': auth.token,
         },
         method: 'POST',
     });
@@ -71,7 +71,8 @@ export async function removeOne(id) {
     const response = await fetch(`${baseURL}/delete`, {
         body: JSON.stringify({'id': id}),
         headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            'auth-token': auth.token,
         },
         method: 'POST',
     });

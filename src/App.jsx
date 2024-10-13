@@ -17,10 +17,11 @@ import UpdateDoc from './update-doc.jsx';
 import './App.css';
 import Register from './register.jsx';
 import Login from './login.jsx';
+import { Logout } from './login.jsx';
 
 export default function App() {
     const basename = process.env.NODE_ENV === 'production' ? "/~alpt22/editor" : "";
-    console.log("Node env: ", process.env.NODE_ENV, " basename: ", basename)
+    // console.log("Node env: ", process.env.NODE_ENV, " basename: ", basename)
     return (    
         <Router basename={basename}>
 
@@ -31,6 +32,8 @@ export default function App() {
                     <Route path="/register" element={<Register />} />
 
                     <Route path="/login" element={<Login />} />
+
+                    <Route path="/logout" element={<Logout />} />
 
                     <Route path="/" element={<AllDocuments />} />
 
