@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import { addOne } from "../models/fetch";
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +18,16 @@ export function RegisterForm() {
 
     const onSubmit = async (data) => {
 
-        await auth.register(data);
+        try {
+            const result = await auth.register(data);
+            if (result.status === 400) {
+                navigate("/register", { state: { message: result.message}});
+            } else {
+                navigate("/login", { state: { message: "A new user was successfully registered!"}});
+            }
+        } catch (err) {
+            console.log("Error: ", err);
+        }
     };
 
     return (

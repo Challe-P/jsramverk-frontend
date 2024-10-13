@@ -20,8 +20,6 @@ const auth = {
     
         const res = await response.json();
 
-        console.log(res);
-
         return res;
     },
     
@@ -32,8 +30,6 @@ const auth = {
             "password": data.password,
         };
     
-        console.log(userBody);
-    
         const response = await fetch(`${baseURL}/login`, {
             body: JSON.stringify(userBody),
             headers: {
@@ -43,14 +39,10 @@ const auth = {
         });
     
         const result = await response.json();
-
         auth.token = result.token;
-
-        console.log(auth.token);
     
         return result;
     },
 };
 
 export default auth;
-

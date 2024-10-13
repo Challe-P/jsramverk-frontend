@@ -4,11 +4,11 @@ import auth from "./models/auth.js";
 
 function Header() {
 
-    if (auth.token) {
-        console.log("This is the token: ", auth.token);
-    } else {
-        console.log("No token is set");
-    }
+    // if (auth.token) {
+    //     console.log("This is the token: ", auth.token);
+    // } else {
+    //     console.log("No token is set");
+    // }
 
     return (
         <header>

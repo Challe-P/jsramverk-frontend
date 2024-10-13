@@ -24,45 +24,55 @@ export function UpdateForm() {
         formState: { errors },
     } = useForm();
     
+    // Fetch document and set field values to document title and content
     useEffect (() => {
         const fetchData = async () => {
-            console.log("Im going to fetch some data", id);
             try {
                 const doc = await getOne(id);
+
+                //Change state
                 setContent(doc.content);
                 setTitle(doc.title);
+
+                //Change input field values
                 setValue("title", doc.title);
+                console.log("content: ", content);
+
                 setValue("content", doc.content); 
+                console.log("content: ", content);
+
             } catch (error) {
-                console.log("An error, buhu");
                 console.error(error);
-                navigate("/");
+                navigate("/", { state: { message: "An error occurred"}});
             }
         };
 
         fetchData();
     }, [id, setValue]);
 
-
-
     const onSubmit = async (data) => {
         data.content = content;
         if (data.title === "") {
             data.title = title;
         };
-        console.log("Data: ", data);
+        
         const response = await updateDocument(data);
-        console.log(response);
+
+        if (response.status === 200) {
+            navigate("/", { state: { message: "Document was successfully updated."}});
+        } else {
+            console.log("Server issues.");
+            console.error(response);
+        }
+
     };
 
     const handleDelete = async () => {
-        // Kanske en alert-ruta?
         try {
             const response = await removeOne(id);
-            console.log(response);
             
             if (response.status === 200) {
-                navigate("/");
+                navigate("/", { state: { message: "Document was successfully removed."}});
             } else {
                 console.log("Server issues.");
                 console.error(response);

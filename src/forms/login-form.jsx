@@ -16,10 +16,12 @@ export function LoginForm() {
     } = useForm();
 
     const onSubmit = async (data) => {
-
-        console.log("Data: ", data);
-        await auth.login(data);
-        console.log(auth.token);
+        try {
+            const result = await auth.login(data);
+            navigate("/", { state: { message: "User was successfully logged in!"}})
+        } catch (err) {
+            console.log("Error: ", err);
+        }
     };
 
     return (

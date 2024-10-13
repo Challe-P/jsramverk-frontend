@@ -6,21 +6,29 @@ import { getAll } from "./models/fetch";
 
 //Components
 import DocContent from "./doc-content";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import auth from "./models/auth.js";
 
 export default function AllDocuments() {
+    const navigate = useNavigate();
 
-    console.log("From view all route", auth.token);
+    useEffect(() => {
+        if (!auth.token) {
+            navigate('/login', { state: { message: "Log in to view your documents."}});    
+        }
+        
+    }, []);
+
     const [docs, setDocs] = useState([]);
+    const location = useLocation();
+    const message = location.state ? location.state.message : "";
 
     try {
         useEffect(() => {
             const fetchData = async () => {
                     try {
                         const docs = await getAll();
-                        console.log(docs.data);
                         setDocs(docs.data);
                     } catch (error) {
                         console.error(error);
@@ -35,8 +43,16 @@ export default function AllDocuments() {
                 <DocContent doccontent={doc.content} />
             </li>
         );
+        
+        const content = (docs.length) ? <ul className="docs">{docItems}</ul> : <h3>Create some new documents.</h3>;
 
-        return <ul className="docs">{docItems}</ul>;
+        return(
+            <div>
+                <h1>{message}</h1>
+                {content}
+            </div>
+        );
+
     } catch (error) {
         console.error("An error occurred.", error);
         return (
