@@ -10,11 +10,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import auth from "./models/auth.js";
 
-export default function AllDocuments() {
+export default function AllDocuments({token, setToken}) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!auth.token) {
+        if (!token) { //changed from auth.token
             navigate('/login', { state: { message: "Log in to view your documents."}});    
         }
         
