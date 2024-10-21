@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     BrowserRouter as Router,
     Routes,
@@ -22,24 +22,26 @@ import { Logout } from './login.jsx';
 export default function App() {
     const basename = process.env.NODE_ENV === 'production' ? "/~alpt22/editor" : "";
     // console.log("Node env: ", process.env.NODE_ENV, " basename: ", basename)
+    const [token, setToken] = useState(localStorage.getItem("token"));
+
     return (    
         <Router basename={basename}>
 
             <div className="App">
-                <Header />
+                <Header token={token} setToken={setToken} />
                 <Routes>
 
                     <Route path="/register" element={<Register />} />
 
-                    <Route path="/login" element={<Login />} />
+                    <Route path="/login" element={<Login token={token} setToken={setToken} />} />
 
                     <Route path="/logout" element={<Logout />} />
 
-                    <Route path="/" element={<AllDocuments />} />
+                    <Route path="/" element={<AllDocuments token={token} setToken={setToken} />} />
 
                     <Route path="/id/:id" element={<UpdateDoc />} />
 
-                    <Route path="/new" element={<NewDoc />} />
+                    <Route path="/new" element={<NewDoc token={token} setToken={setToken} />} />
 
                 </Routes>
                 <Footer />

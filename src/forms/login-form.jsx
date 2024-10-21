@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
 import auth from '../models/auth.js';
 
-export function LoginForm() {
+export function LoginForm({token, setToken}) {
     const navigate = useNavigate();
-    const [value, setValue] = useState('');
 
     const {
         register,
@@ -18,6 +17,8 @@ export function LoginForm() {
     const onSubmit = async (data) => {
         try {
             const result = await auth.login(data);
+            localStorage.setItem("token", auth.token);
+            setToken(auth.token);
             navigate("/", { state: { message: "User was successfully logged in!"}})
         } catch (err) {
             console.log("Error: ", err);
