@@ -3,9 +3,18 @@ import { useForm } from "react-hook-form";
 import { updateDocument, getOne, removeOne } from "../models/fetch";
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { baseURL, frontURL, mailgunUtils } from '../utils';
+import Mailgun from 'mailgun.js';
+
+// Mailgun
+const formData = require('form-data');
+// const Mailgun = require('mailgun.js');
+
+const mailgun = new Mailgun(formData); // key: process.env.MAILGUN_API_KEY || mailgunUtils.apiKey
+const mg = mailgun.client({username: 'api', key: "2d61a5bb446f919f18ae556d7c162970-784975b6-f20ad02e"});
 
 
 export function UpdateForm() {
@@ -14,6 +23,9 @@ export function UpdateForm() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const navigate = useNavigate();
+
+    const location = useLocation();
+    const message = location.state ? location.state.message : "";
     
     const {
         register,
@@ -55,7 +67,7 @@ export function UpdateForm() {
         if (data.title === "") {
             data.title = title;
         };
-        
+
         const response = await updateDocument(data);
 
         if (response.status === 200) {
@@ -83,8 +95,29 @@ export function UpdateForm() {
         }
     };
 
+    const handleShare = async (data) => {
+        console.log("Share this document.", data);
+        
+        await mg.messages.create(mailgunUtils.domain, {
+            from: `Excited User <mailgun@${mailgunUtils.domain}>`,
+            to: [data.email],
+            subject: "Hello from Challe P and Narwhal! --('' c ){",
+            text: "Sign up at Challe P and Narwhal!",
+            html: `
+            <h1>Sign up at Challe P and Narwhal!</h1>
+            <a href="${frontURL}/register">Register here</a>
+            `
+        })
+        .then(msg => console.log(msg)) // logs response data
+        .catch(err => console.error(err)); // logs any error
+        navigate("#", { state: { message: `Document is now shared with ${data.email}!`}});
+
+    }
+
     return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
+    <>
+        <h1>{message}</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
             <label htmlFor="title">Title</label>
             <input id="title" type="text" defaultValue={title} {...register('title')} />
@@ -93,5 +126,10 @@ export function UpdateForm() {
             <input type="submit" value="Save changes" />
             <button type="button" onClick={handleDelete}>Delete document</button>
         </form>
+        <form onSubmit={handleSubmit(handleShare)}>
+            <input type="email" id="email" {...register('email')} />
+            <input type="submit" value="Share document" />
+        </form>
+    </>
     );
 }
