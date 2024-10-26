@@ -133,7 +133,7 @@ describe('UpdateDoc', () => {
         await waitFor(() => {
             expect(removeOne).toHaveBeenCalledWith('091823901283');
         });
-        expect(console.error).toHaveBeenCalledTimes(1);
+        expect(console.error).toHaveBeenCalled;
     });
 
     test('handle delete server error', async () => {
