@@ -13,6 +13,17 @@ describe('Tests main app functionality', ()  => {
         jest.clearAllMocks();
     });
 
+    beforeAll(() => {
+        jest.spyOn(console, 'error').mockImplementation(jest.fn());
+        jest.spyOn(console, 'log').mockImplementation(jest.fn());
+    });
+
+    afterAll(() => {
+        global.console.log.mockRestore();
+        global.console.error.mockRestore();
+        jest.clearAllMocks();
+    });
+
     test("renders and displays start screen, header and footer", async () => {
         render(<App url="/" />);
         await screen.findByText('Home'); // Change here if header is changed.
