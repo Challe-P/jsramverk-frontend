@@ -12,11 +12,13 @@ export function QuillEditor({content, setContent, delta,
     // Loads the data sent from parent properly
     useEffect(() =>
     {
+        quillRef.current.getEditor().off('text-change');
+        let isLatest = deltaIsLatest;
         if (!socket)
         {
             return;
         }
-        if (delta && deltaIsLatest) 
+        if (delta && isLatest) 
         {
             quillRef.current.getEditor().setContents(delta, 'silent');
         } else {
@@ -33,9 +35,13 @@ export function QuillEditor({content, setContent, delta,
                 return;
             }
             setDelta(quillRef.current.getEditor().getContents());
-            setDeltaIsLatest(true);
             setContent(quillRef.current.getEditor().getText());
-            console.log("emitting")
+            if (!isLatest) {
+                socket.emit('doc', { id, title: title, content: quillRef.current.getEditor().getContents(), user: socket.id, mode: "text" });
+                setDeltaIsLatest(true);
+                isLatest = true;
+                return;
+            }
             socket.emit('doc', { id, title: title, content: delta, user: socket.id, mode: "text" });
         }
 
@@ -59,6 +65,7 @@ export function QuillEditor({content, setContent, delta,
             quillRef.current.getEditor().updateContents(delta, 'silent');
             setDelta(quillRef.current.getEditor().getContents());
             setDeltaIsLatest(true);
+            isLatest = true;
         };
 
         socket.on("doc", onDoc);

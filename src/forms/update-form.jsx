@@ -60,7 +60,6 @@ export function UpdateForm() {
 
         socket.current = io(baseURL);
         socket.current.emit("create", id);
-
         return () => {
             socket.current.off('doc');
             socket.current.disconnect();
@@ -74,7 +73,7 @@ export function UpdateForm() {
             data.content = delta;
         }
         data.title = title;
-        console.log(data)
+        console.log(data);
         const response = await updateDocument(data);
         console.log(response);
     };

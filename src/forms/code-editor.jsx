@@ -6,19 +6,6 @@ import { runCode } from '../models/exec';
 export function CodeEditor({ content, setContent, setDelta, setDeltaIsLatest, title, socket, id, setEditorMode, setTitle }) {
 
     const [codeOutput, setCodeOutput] = useState("");
-    // Check if a ViewUpdate contains User Events
-    /*
-    function isViewUpdateFromUserInput(viewUpdate) {
-        if (viewUpdate.docChanged) {
-            for (const transaction of viewUpdate.transactions) {
-                const userEventType = transaction.annotation(Transaction.userEvent);
-                if (userEventType) return userEventType;
-            }
-        }
-  
-        return false;
-    }
-    */
     useEffect(() => {
         const onDoc = (data) => {
             if (data.user !== socket.id)
