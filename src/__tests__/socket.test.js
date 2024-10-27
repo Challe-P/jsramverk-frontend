@@ -37,6 +37,7 @@ describe('Socket tests', () => {
   
       io.mockReturnValue(socketMock);
     });
+
     afterAll(() => {
        jest.clearAllMocks();
     });
@@ -138,6 +139,23 @@ describe('Socket tests', () => {
         expect(quillInstance.getText()).toBe("Fake emitted content\n");
     });
 
+    test('Tests taht socket onDoc works from code to code', async () =>{
+        useParams.mockReturnValue({id: "091823901283"});
+        const mockResponse = {title: "Fake title", content: "Fake content", mode: "code"};
+        getOne.mockResolvedValue(mockResponse);
+        await act(async () => {
+            render(<UpdateDoc />);
+        });
+        await act(() => {
+            const onDoc = socketMock.on.mock.calls.find(call => call[0] === 'doc')[1];
+            onDoc({content: "console.log('test')", mode: "code", user: "apan"});
+        });
+        // expect codemirror to exist and content to be correct
+        expect(document.querySelector('.cm-content')).toBeInTheDocument();
+        expect(document.querySelector('.cm-content').textContent).toBe("console.log('test')")
+    });
+
+
     test('Tests that onDoc changes from text to code when receiving code data', async () =>{
         useParams.mockReturnValue({id: "091823901283"});
         const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
@@ -151,8 +169,7 @@ describe('Socket tests', () => {
         });
         // expect codemirror to exist and content to be correct
         expect(document.querySelector('.cm-content')).toBeInTheDocument();
-        expect(document.querySelector('.cm-content').textContent).toBe("console.log('test')")
-
+        expect(document.querySelector('.cm-content').textContent).toBe("console.log('test')");
     });
    
     test('Tests that onDoc changes from code to text when receiving text data', async () => {
