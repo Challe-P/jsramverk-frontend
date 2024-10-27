@@ -37,6 +37,7 @@ describe('Socket tests', () => {
   
       io.mockReturnValue(socketMock);
     });
+
     afterAll(() => {
        jest.clearAllMocks();
     });
@@ -114,10 +115,84 @@ describe('Socket tests', () => {
             quillInstance.root.dispatchEvent(new Event('text-change'));
         });
         const emittedDelta = new Delta({ops: [{"retain": 5}, {"insert": "emitted "}]})
-
         expect(socketMock.emit).toHaveBeenCalledWith("doc", {id: "091823901283", content: emittedDelta, user: undefined, title: "Fake title", mode: "text"});
     });
 
-    // Tests that the socket behaves properly when a component dismounts
+    // Tests that the data is handled correctly when socket sends text to text
+    test('socket onDoc text from text', async () => {
+        useParams.mockReturnValue({id: "091823901283"});
+        const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
+        getOne.mockResolvedValue(mockResponse);
+        const emittedDelta = new Delta({ops: [{"retain": 5}, {"insert": "emitted "}]})
+        await act(async () => {
+            render(<UpdateDoc />);
+        });
+        await act(() => {
+            const onDoc = socketMock.on.mock.calls.find(call => call[0] === 'doc')[1];
+            onDoc({title: "Ondoc faked", content: emittedDelta, mode: "text", user: "apan"});
+        });
 
+        await screen.findByText('Fake emitted content');
+        const quillEditor = document.getElementsByClassName('ql-container')[0];
+        const quillInstance = Quill.find(quillEditor);
+        expect(quillInstance).toBeInstanceOf(Quill);
+        expect(quillInstance.getText()).toBe("Fake emitted content\n");
+    });
+
+    test('Tests taht socket onDoc works from code to code', async () =>{
+        useParams.mockReturnValue({id: "091823901283"});
+        const mockResponse = {title: "Fake title", content: "Fake content", mode: "code"};
+        getOne.mockResolvedValue(mockResponse);
+        await act(async () => {
+            render(<UpdateDoc />);
+        });
+        await act(() => {
+            const onDoc = socketMock.on.mock.calls.find(call => call[0] === 'doc')[1];
+            onDoc({content: "console.log('test')", mode: "code", user: "apan"});
+        });
+        // expect codemirror to exist and content to be correct
+        expect(document.querySelector('.cm-content')).toBeInTheDocument();
+        expect(document.querySelector('.cm-content').textContent).toBe("console.log('test')")
+    });
+
+
+    test('Tests that onDoc changes from text to code when receiving code data', async () =>{
+        useParams.mockReturnValue({id: "091823901283"});
+        const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
+        getOne.mockResolvedValue(mockResponse);
+        await act(async () => {
+            render(<UpdateDoc />);
+        });
+        await act(() => {
+            const onDoc = socketMock.on.mock.calls.find(call => call[0] === 'doc')[1];
+            onDoc({content: "console.log('test')", mode: "code", user: "apan"});
+        });
+        // expect codemirror to exist and content to be correct
+        expect(document.querySelector('.cm-content')).toBeInTheDocument();
+        expect(document.querySelector('.cm-content').textContent).toBe("console.log('test')");
+    });
+   
+    test('Tests that onDoc changes from code to text when receiving text data', async () => {
+        useParams.mockReturnValue({id: "091823901283"});
+        const mockResponse = {title: "Fake title", content: "Fake content", mode: "code"};
+        getOne.mockResolvedValue(mockResponse);
+        const emittedDelta = new Delta({ops: [{"insert": "Wow, this is text, not code!"}]})
+
+        await act(async () => {
+            render(<UpdateDoc />);
+        });
+        
+        await act(() => {
+            const onDoc = socketMock.on.mock.calls.find(call => call[0] === 'doc')[1];
+            onDoc({title: "Ondoc faked", content: emittedDelta, mode: "text", user: "apan"});
+        });
+
+        const quillEditor = document.getElementsByClassName('ql-container')[0];
+        const quillInstance = Quill.find(quillEditor);
+        expect(quillInstance).toBeInstanceOf(Quill);
+        expect(quillInstance.getText()).toBe("Wow, this is text, not code!\n");
+    })
+
+    // Sending pure text with socket doesn't work with text editor
+    
 });
