@@ -12,7 +12,6 @@ export function NewForm({token, setToken}) {
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
     } = useForm();
 

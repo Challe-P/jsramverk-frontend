@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
@@ -10,7 +9,6 @@ export function LoginForm({token, setToken}) {
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
     } = useForm();
 

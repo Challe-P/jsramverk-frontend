@@ -11,7 +11,7 @@ export default function NewDoc({token, setToken} ) {
             navigate('/login', { state: { message: "Log in to create documents."}});    
         }
         
-    }, []);
+    }, [navigate, token]);
 
     return (
         <NewForm token={token} setToken={setToken} />

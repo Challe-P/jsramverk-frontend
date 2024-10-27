@@ -11,7 +11,7 @@ export default function AllDocuments({token, setToken}) {
             navigate('/login', { state: { message: "Log in to view your documents."}});    
         }
         
-    }, []);
+    }, [navigate, token]);
 
     const [docs, setDocs] = useState([]);
     const location = useLocation();
@@ -28,7 +28,7 @@ export default function AllDocuments({token, setToken}) {
                     }
                 };
             fetchData();
-        }, []);
+        }, [token]);
 
         const docItems = docs.map(doc => 
             <li key={doc._id}>

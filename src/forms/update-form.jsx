@@ -19,7 +19,6 @@ export function UpdateForm({token, setToken}) {
         register,
         handleSubmit,
         setValue,
-        formState: { errors },
     } = useForm();
     
     // Fetch document and set field values to document title and content
@@ -42,7 +41,7 @@ export function UpdateForm({token, setToken}) {
         };
 
         fetchData();
-    }, [id, setValue]);
+    }, [id, setValue, navigate, token]);
 
     const onSubmit = async (data) => {
         data.content = content;
