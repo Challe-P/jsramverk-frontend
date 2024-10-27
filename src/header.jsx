@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
 import "./header.css";
-import auth from "./models/auth.js";
-import { useEffect, useState } from "react";
 
 function Header({token, setToken}) {
 
     const logoutHandler = () => {
-        localStorage.clear("token");
+        sessionStorage.clear("token");
         setToken(null);
-        console.log("token is cleared: ", token);
+        
+        console.log("Token has been cleared.");
     }
 
     return (

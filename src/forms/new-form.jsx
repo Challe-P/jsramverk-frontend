@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { addOne } from "../models/fetch";
 import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-export function NewForm() {
+export function NewForm({token, setToken}) {
     const navigate = useNavigate();
     const [value, setValue] = useState('');
 
@@ -17,11 +17,11 @@ export function NewForm() {
     } = useForm();
 
     const onSubmit = async (data) => {
-
+        console.log(token);
         data.content = value;
-        const response = await addOne(data);
+        const response = await addOne(data, token);
         let res = await response.json();
-        navigate("/id/" + res.insertedId);
+        navigate("/id/" + res.insertedId, { state: { message: "Document successfully created!"}});
     };
 
     return (

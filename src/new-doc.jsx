@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router";
 import "./doc.css";
 import { NewForm } from './forms/new-form.jsx';
-import auth from './models/auth.js';
 import { useEffect } from "react";
 
 export default function NewDoc({token, setToken} ) {
@@ -15,6 +14,6 @@ export default function NewDoc({token, setToken} ) {
     }, []);
 
     return (
-        <NewForm />
+        <NewForm token={token} setToken={setToken} />
     );
 }

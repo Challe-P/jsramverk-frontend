@@ -16,9 +16,7 @@ export function LoginForm({token, setToken}) {
 
     const onSubmit = async (data) => {
         try {
-            const result = await auth.login(data);
-            localStorage.setItem("token", auth.token);
-            setToken(auth.token);
+            await auth.login(data, setToken);
             navigate("/", { state: { message: "User was successfully logged in!"}})
         } catch (err) {
             console.log("Error: ", err);
@@ -63,7 +61,7 @@ export function LoginForm({token, setToken}) {
 
             {/* include validation with required or other standard HTML validation rules */}
             
-            <input type="submit" value="Login" />
+            <input type="submit" value="Login" className='button' />
         </form>
     );
 }

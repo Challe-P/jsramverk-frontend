@@ -1,7 +1,5 @@
 export default function DocContent({doccontent}) {
-    const htmlContent = `
-        ${doccontent}
-    `;
+    const htmlContent = `${doccontent}`;
     
     return (
         <div 

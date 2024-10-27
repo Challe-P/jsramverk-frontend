@@ -1,8 +1,8 @@
 import "./doc.css";
 import { UpdateForm } from './forms/update-form.jsx';
 
-export default function UpdateDoc() {
+export default function UpdateDoc({token, setToken}) {
     return (
-        <UpdateForm />
+        <UpdateForm token={token} setToken={setToken} />
     );
 }

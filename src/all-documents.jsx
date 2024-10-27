@@ -1,20 +1,13 @@
-//Hooks
 import { useEffect, useState } from "react";
-
-//Utility functions
 import { getAll } from "./models/fetch";
-
-//Components
 import DocContent from "./doc-content";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
-import auth from "./models/auth.js";
 
 export default function AllDocuments({token, setToken}) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!token) { //changed from auth.token
+        if (!token) {
             navigate('/login', { state: { message: "Log in to view your documents."}});    
         }
         
@@ -28,7 +21,7 @@ export default function AllDocuments({token, setToken}) {
         useEffect(() => {
             const fetchData = async () => {
                     try {
-                        const docs = await getAll();
+                        const docs = await getAll(token);
                         setDocs(docs.data);
                     } catch (error) {
                         console.error(error);

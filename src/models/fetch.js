@@ -1,15 +1,14 @@
 import { baseURL } from "../utils";
-import auth from "./auth.js";
 
 /**
  * Fetch all documents from cloud database at baseURL
  * @returns
  */
-export async function getAll() {
+export async function getAll(token) {
     const response = await fetch(baseURL, {
         headers: {
             'content-type': 'application/json',
-            'auth-token': auth.token,
+            'auth-token': token,
         },
         method: 'GET',
     });
@@ -17,11 +16,11 @@ export async function getAll() {
     return response.json();
 }
 
-export async function getOne(id) {
+export async function getOne(id, token) {
     const url = `${baseURL}/doc/${id}`;
     const response = await fetch(url, {
         headers: {
-            'auth-token': auth.token,
+            'auth-token': token,
         },
         method: 'GET',
     });
@@ -30,7 +29,7 @@ export async function getOne(id) {
     return json.data[0];
 }
 
-export async function updateDocument(data) {
+export async function updateDocument(data, token) {
     const updateBody = {
         "id": data.id,
         "title": data.title,
@@ -41,7 +40,7 @@ export async function updateDocument(data) {
         body: JSON.stringify(updateBody),
         headers: {
             'content-type': 'application/json',
-            'auth-token': auth.token,
+            'auth-token': token,
         },
         method: 'POST', //PUT gives a 404
     });
@@ -49,7 +48,25 @@ export async function updateDocument(data) {
     return response;
 }
 
-export async function addOne(data) {
+export async function shareDocument(data, token) {
+    const updateBody = {
+        "id": data.id,
+        "email": data.email,
+    };
+
+    const response = await fetch(`${baseURL}/share`, {
+        body: JSON.stringify(updateBody),
+        headers: {
+            'content-type': 'application/json',
+            'auth-token': token,
+        },
+        method: 'POST', //PUT gives a 404
+    });
+
+    return response;
+}
+
+export async function addOne(data, token) {
     const body = {
         "title": data.title,
         "content": data.content
@@ -59,7 +76,7 @@ export async function addOne(data) {
         body: JSON.stringify(body),
         headers: {
             'content-type': 'application/json',
-            'auth-token': auth.token,
+            'auth-token': token,
         },
         method: 'POST',
     });
@@ -67,12 +84,12 @@ export async function addOne(data) {
     return response;
 }
 
-export async function removeOne(id) {
+export async function removeOne(id, token) {
     const response = await fetch(`${baseURL}/delete`, {
         body: JSON.stringify({'id': id}),
         headers: {
             'content-type': 'application/json',
-            'auth-token': auth.token,
+            'auth-token': token,
         },
         method: 'POST',
     });

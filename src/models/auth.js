@@ -1,7 +1,6 @@
 import { baseURL } from "../utils";
 
 const auth = {
-    token: "",
 
     register: async function register(data) {
         const userBody = {
@@ -23,7 +22,7 @@ const auth = {
         return res;
     },
     
-    login: async function login(data) {
+    login: async function login(data, setToken) {
     
         const userBody = {
             "username": data.username,
@@ -39,7 +38,9 @@ const auth = {
         });
     
         const result = await response.json();
-        auth.token = result.token;
+        sessionStorage.setItem("token", result.token);
+        setToken(result.token);
+        console.log("Token is successfully set.");
     
         return result;
     },

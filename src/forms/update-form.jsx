@@ -1,37 +1,24 @@
-import React from 'react';
 import { useForm } from "react-hook-form";
-import { updateDocument, getOne, removeOne } from "../models/fetch";
+import { updateDocument, shareDocument, getOne, removeOne } from "../models/fetch";
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { baseURL, frontURL } from '../utils';
-import Mailgun from 'mailgun.js';
 
-// Mailgun
-const formData = require('form-data');
-// const Mailgun = require('mailgun.js');
-
-const mailgun = new Mailgun(formData);
-const mg = mailgun.client({username: 'api', key: "YOUR_KEY_HERE"});
-
-export function UpdateForm() {
+export function UpdateForm({token, setToken}) {
     // Den här hämtar datan hela tiden. Borde hämta en gång och sen låta det vara? Iof när socketen ska igång är det ju bra.
     const { id } = useParams();
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const navigate = useNavigate();
-
     const location = useLocation();
     const message = location.state ? location.state.message : "";
     
     const {
         register,
         handleSubmit,
-        watch,
         setValue,
-        control,
         formState: { errors },
     } = useForm();
     
@@ -39,8 +26,7 @@ export function UpdateForm() {
     useEffect (() => {
         const fetchData = async () => {
             try {
-                const doc = await getOne(id);
-
+                const doc = await getOne(id, token);
                 //Change state
                 setContent(doc.content);
                 setTitle(doc.title);
@@ -64,7 +50,7 @@ export function UpdateForm() {
             data.title = title;
         };
 
-        const response = await updateDocument(data);
+        const response = await updateDocument(data, token);
 
         if (response.status === 200) {
             navigate("/", { state: { message: "Document was successfully updated."}});
@@ -77,7 +63,7 @@ export function UpdateForm() {
 
     const handleDelete = async () => {
         try {
-            const response = await removeOne(id);
+            const response = await removeOne(id, token);
             
             if (response.status === 200) {
                 navigate("/", { state: { message: "Document was successfully removed."}});
@@ -92,21 +78,21 @@ export function UpdateForm() {
     };
 
     const handleShare = async (data) => {
+        data.id = id;
         console.log("Share this document.", data);
-        
-        // await mg.messages.create(mailgunUtils.domain, {
-        //     from: `Excited User <mailgun@${mailgunUtils.domain}>`,
-        //     to: [data.email],
-        //     subject: "Hello from Challe P and Narwhal! --('' c ){",
-        //     text: "Sign up at Challe P and Narwhal!",
-        //     html: `
-        //     <h1>Sign up at Challe P and Narwhal!</h1>
-        //     <a href="${frontURL}/register">Register here</a>
-        //     `
-        // })
-        // .then(msg => console.log(msg)) // logs response data
-        // .catch(err => console.error(err)); // logs any error
-        navigate("#", { state: { message: `Document is now shared with ${data.email}!`}});
+
+        try {
+            const response = await shareDocument(data, token);
+            if (response.status === 200) {
+                navigate("#", { state: { message: `Document is now shared with ${data.email}!`}});
+            } else {
+                console.log("Server issues.");
+                console.error(response);
+            }
+        } catch (error) {
+            console.log("Something went wrong");
+            console.error(error);
+        }
 
     }
 
