@@ -33,6 +33,7 @@ export function CodeEditor({ content, setContent, setDelta, setDeltaIsLatest, ti
             socket.off('doc', onDoc)
         }
     });
+
     const onChange = (value, viewUpdate) => {
         setContent(value);
         setDeltaIsLatest(false);
