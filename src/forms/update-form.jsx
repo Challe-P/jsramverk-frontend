@@ -10,7 +10,7 @@ import { baseURL } from "../utils";
 import { CodeEditor } from './code-editor';
 import { QuillEditor } from './quill-editor';
 
-export function UpdateForm({token, setToken}) {
+export function UpdateForm({token}) {
     // Den här hämtar datan hela tiden. Borde hämta en gång och sen låta det vara? Iof när socketen ska igång är det ju bra.
     const { id } = useParams();
     const [title, setTitle] = useState("");
@@ -27,9 +27,6 @@ export function UpdateForm({token, setToken}) {
     const {
         register,
         handleSubmit,
-        setValue,
-        watch,
-        control,
         formState: { errors },
     } = useForm();
 

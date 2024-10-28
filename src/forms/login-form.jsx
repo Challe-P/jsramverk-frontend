@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
-import 'react-quill/dist/quill.snow.css';
 import auth from '../models/auth.js';
 
 export function LoginForm({token, setToken}) {
@@ -23,7 +22,7 @@ export function LoginForm({token, setToken}) {
 
     return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
             {/* register your input into the hook by invoking the "register" function */}
             <label htmlFor="username">Username</label>
             <input 

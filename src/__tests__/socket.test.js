@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act, getAllByRole, getByRole } from '@testing-library/react';
 import { getOne } from "../models/fetch.js";
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { io } from "socket.io-client";
 import UpdateDoc from '../update-doc.jsx';
 import userEvent from "@testing-library/user-event";
@@ -13,8 +13,9 @@ import { EditorView } from 'codemirror';
 jest.mock('socket.io-client');
 
 jest.mock('react-router-dom', () => ({
-    useNavigate: jest.fn(),
     useParams: jest.fn(),
+    useNavigate: jest.fn(),
+    useLocation: jest.fn(),
 }));
 
 // Mock the getOne function
@@ -36,6 +37,7 @@ describe('Socket tests', () => {
       };
   
       io.mockReturnValue(socketMock);
+      useLocation.mockReturnValue({state: "test"});
     });
 
     afterAll(() => {
@@ -47,6 +49,7 @@ describe('Socket tests', () => {
         useParams.mockReturnValue({id: "091823901283"});
         const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
         getOne.mockResolvedValue(mockResponse);
+
         await act(async () => {
             render(<UpdateDoc />);
         });
@@ -60,6 +63,7 @@ describe('Socket tests', () => {
         useParams.mockReturnValue({id: "091823901283"});
         const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
         getOne.mockResolvedValue(mockResponse);
+
         await act(async () => {
             render(<UpdateDoc />);
         });
@@ -82,6 +86,7 @@ describe('Socket tests', () => {
         useParams.mockReturnValue({id: "091823901283"});
         const mockResponse = {title: "Fake title", content: "Fake content", mode: "code"};
         getOne.mockResolvedValue(mockResponse);
+
         await act(async () => {
             render(<UpdateDoc />);
         });
@@ -102,6 +107,7 @@ describe('Socket tests', () => {
         useParams.mockReturnValue({id: "091823901283"});
         const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
         getOne.mockResolvedValue(mockResponse);
+
         await act(async () => {
             render(<UpdateDoc />);
         });
@@ -124,6 +130,7 @@ describe('Socket tests', () => {
         const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
         getOne.mockResolvedValue(mockResponse);
         const emittedDelta = new Delta({ops: [{"retain": 5}, {"insert": "emitted "}]})
+
         await act(async () => {
             render(<UpdateDoc />);
         });
@@ -143,6 +150,7 @@ describe('Socket tests', () => {
         useParams.mockReturnValue({id: "091823901283"});
         const mockResponse = {title: "Fake title", content: "Fake content", mode: "code"};
         getOne.mockResolvedValue(mockResponse);
+        
         await act(async () => {
             render(<UpdateDoc />);
         });
@@ -160,6 +168,7 @@ describe('Socket tests', () => {
         useParams.mockReturnValue({id: "091823901283"});
         const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
         getOne.mockResolvedValue(mockResponse);
+        
         await act(async () => {
             render(<UpdateDoc />);
         });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { getOne } from "../models/fetch.js";
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import UpdateDoc from '../update-doc.jsx';
 import { runCode } from "../models/exec";
 import userEvent from "@testing-library/user-event";
@@ -11,6 +11,7 @@ import Delta from 'quill-delta';
 jest.mock('react-router-dom', () => ({
     useParams: jest.fn(),
     useNavigate: jest.fn(),
+    useLocation: jest.fn(),
 }));
 
 // Mock the getOne function
@@ -34,6 +35,7 @@ describe('Tests quill editor', () => {
     });
 
     test('tests that loading document with delta content works', async () => {
+        useLocation.mockReturnValue({state: "test"});
         useParams.mockReturnValue({id: "091823901283"});
         const delta = new Delta({ops: [{"insert": "Fake delta content "}]})
         const mockResponse = {title: "Fake title", content: delta, mode: "text"};

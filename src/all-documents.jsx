@@ -1,16 +1,15 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { getAll } from "./models/fetch";
 import DocContent from "./doc-content";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-export default function AllDocuments({token, setToken}) {
+export default function AllDocuments({token}) {
     const navigate = useNavigate();
-
     useEffect(() => {
         if (!token) {
             navigate('/login', { state: { message: "Log in to view your documents."}});    
         }
-        
     }, [navigate, token]);
 
     const [docs, setDocs] = useState([]);
@@ -22,7 +21,7 @@ export default function AllDocuments({token, setToken}) {
             const fetchData = async () => {
                     try {
                         const docs = await getAll(token);
-
+                        console.log(docs);
                         setDocs(docs.data);
                     } catch (error) {
                         console.error(error);
@@ -30,13 +29,13 @@ export default function AllDocuments({token, setToken}) {
                 };
             fetchData();
         }, [token]);
-
-        const docItems = docs.map(doc => 
+        const docItems = docs.map(doc =>
             <li key={doc._id}>
                 <Link to={'/id/' + doc._id}>{doc.title}</Link>
                 <DocContent doccontent={doc.content} />
             </li>
         );        
+
         const content = (docs.length) ? <ul className="docs">{docItems}</ul> : <h3>Create some new documents.</h3>;
 
         return(

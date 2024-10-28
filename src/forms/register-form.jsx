@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
-import 'react-quill/dist/quill.snow.css';
 import auth from '../models/auth.js';
 
 export function RegisterForm() {
