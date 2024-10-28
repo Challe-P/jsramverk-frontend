@@ -79,3 +79,15 @@ label {
   border-radius: 15px;
   background-color: rgb(236, 229, 216);
 }
+
+.button {
+  display: inline-block;
+}
+
+input, label {
+  margin: 5px 5px;
+}
+
+/* label {
+  margin: 5px 5px;
+} */

@@ -1,33 +1,32 @@
 import React from 'react';
 import { set, useForm } from "react-hook-form";
-import { updateDocument, getOne, removeOne } from "../models/fetch";
 import { useParams } from 'react-router-dom';
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { updateDocument, shareDocument, getOne, removeOne } from "../models/fetch";
 import 'react-quill-new/dist/quill.snow.css';
 import { io } from "socket.io-client";
 import { baseURL } from "../utils";
 import { CodeEditor } from './code-editor';
 import { QuillEditor } from './quill-editor';
 
-export function UpdateForm() {
+export function UpdateForm({token}) {
     // Den här hämtar datan hela tiden. Borde hämta en gång och sen låta det vara? Iof när socketen ska igång är det ju bra.
     const { id } = useParams();
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const navigate = useNavigate();
+    const location = useLocation();
+    const message = location.state ? location.state.message : "";
     const [editorMode, setEditorMode] = useState("text");
     const [delta, setDelta] = useState("");
     const [deltaIsLatest, setDeltaIsLatest] = useState(true);
     
-    const navigate = useNavigate();
     const socket = useRef(null);
     
     const {
         register,
         handleSubmit,
-        watch,
-        setValue,
-        control,
         formState: { errors },
     } = useForm();
 
@@ -36,7 +35,7 @@ export function UpdateForm() {
         const fetchData = async () => {
             // Fetches data from atlasDB and sets it
             try {
-                const doc = await getOne(id);
+                const doc = await getOne(id, token);
                 setTitle(doc.title);
                 if (typeof(doc.content) === "object") {
                     setDelta(doc.content);
@@ -57,14 +56,13 @@ export function UpdateForm() {
         };
 
         fetchData();
-
         socket.current = io(baseURL);
         socket.current.emit("create", id);
         return () => {
             socket.current.off('doc');
             socket.current.disconnect();
         }
-    }, [id, baseURL]);
+    }, [id, navigate, token]);
 
     const onSubmit = async (data) => {
         data.content = content;
@@ -74,8 +72,13 @@ export function UpdateForm() {
         }
         data.title = title;
         console.log(data);
-        const response = await updateDocument(data);
-        console.log(response);
+        const response = await updateDocument(data, token);
+        if (response.status === 200) {
+            console.log(response);
+        } else {
+            console.log("Server issues.");
+            console.error(response);
+        }
     };
 
     const handleDelete = async () => {
@@ -85,7 +88,7 @@ export function UpdateForm() {
             console.log(response);
             
             if (response.status === 200) {
-                navigate("/");
+                navigate("/", { state: { message: "Document was successfully removed."}});
             } else {
                 console.log("Server issues.");
                 console.error(response);
@@ -96,9 +99,30 @@ export function UpdateForm() {
         }
     };
 
+
+    const handleShare = async (data) => {
+        data.id = id;
+        console.log("Share this document.", data);
+
+        try {
+            const response = await shareDocument(data, token);
+            if (response.status === 200) {
+                navigate("#", { state: { message: `Document is now shared with ${data.email}!`}});
+            } else {
+                console.log("Server issues.");
+                console.error(response);
+            }
+        } catch (error) {
+            console.log("Something went wrong");
+            console.error(error);
+        }
+
+    }
     return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
-        <form onSubmit={handleSubmit(onSubmit)}>
+      <div>
+              <h1>{message}</h1>
+      <form onSubmit={handleSubmit(onSubmit)}>
             <label htmlFor="title">Title</label>
             <input id="title" type="text" defaultValue={title} onChange={(e) => setTitle(e.target.value)} />
             {editorMode === "text" ? (
@@ -137,5 +161,10 @@ export function UpdateForm() {
                 <button type="button" onClick={() => setEditorMode("code")}>Code Editor</button>
             </div>
         </form>
+        <form onSubmit={handleSubmit(handleShare)}>
+            <input type="email" id="email" {...register('email')} />
+            <input type="submit" value="Share document" />
+        </form>
+     </div>
     );
 }

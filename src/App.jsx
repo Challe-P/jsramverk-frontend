@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import {
     BrowserRouter as Router,
     Routes,
@@ -12,24 +13,32 @@ import Footer from './footer.jsx';
 import AllDocuments from './all-documents.jsx';
 import NewDoc from './new-doc.jsx';
 import UpdateDoc from './update-doc.jsx';
+import Register from './register.jsx';
+import Login from './login.jsx';
 
 // Import React styling
 import './App.css';
 
 export default function App() {
     const basename = process.env.NODE_ENV === 'production' ? "/~alpt22/editor" : "";
+    const [token, setToken] = useState(sessionStorage.getItem("token"));
+
     return (    
         <Router basename={basename}>
 
             <div className="App">
-                <Header />
+                <Header token={token} setToken={setToken} />
                 <Routes>
 
-                    <Route path="/" element={<AllDocuments />} />
+                    <Route path="/register" element={<Register />} />
 
-                    <Route path="/id/:id" element={<UpdateDoc />} />
+                    <Route path="/login" element={<Login token={token} setToken={setToken} />} />
 
-                    <Route path="/new" element={<NewDoc />} />
+                    <Route path="/" element={<AllDocuments token={token} />} />
+
+                    <Route path="/id/:id" element={<UpdateDoc token={token} />} />
+
+                    <Route path="/new" element={<NewDoc token={token} />} />
 
                 </Routes>
                 <Footer />

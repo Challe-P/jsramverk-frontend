@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { getOne, updateDocument, removeOne } from "../models/fetch.js";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import UpdateDoc from '../update-doc.jsx';
 import userEvent from "@testing-library/user-event";
 import Delta from 'quill-delta';
@@ -10,6 +10,7 @@ import Delta from 'quill-delta';
 jest.mock('react-router-dom', () => ({
     useNavigate: jest.fn(),
     useParams: jest.fn(),
+    useLocation: jest.fn(),
 }));
 
 // Mock the getOne function
@@ -32,6 +33,10 @@ describe('UpdateDoc', () => {
         jest.clearAllMocks();
     });
 
+    beforeEach(() => {
+        useLocation.mockReturnValue({state: "test"});
+    });
+
     test('show document', async () => {
         useParams.mockReturnValue({id: "091823901283"});
         const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
@@ -47,6 +52,7 @@ describe('UpdateDoc', () => {
         useParams.mockReturnValue({id: "091823901283"});
         const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
         getOne.mockResolvedValue(mockResponse);
+        updateDocument.mockResolvedValue({status: 200});
 
         await act(async () => {
             render(<UpdateDoc />);
@@ -71,7 +77,7 @@ describe('UpdateDoc', () => {
 
         expect(screen.getByLabelText('Title')).toHaveValue('Fake updated title');
         expect(document.getElementsByClassName('ql-editor')[0].textContent).toContain('Fake updated content');
-        expect(updateDocument).toHaveBeenCalledWith({"content": sentDelta, "id": "091823901283", "title": "Fake updated title"});
+        expect(updateDocument).toHaveBeenCalledWith({"content": sentDelta, "id": "091823901283", "email": "", "title": "Fake updated title"}, undefined);
     });
 
     test('delete document', async () => {
@@ -95,7 +101,7 @@ describe('UpdateDoc', () => {
 
         await waitFor(() => {
             expect(removeOne).toHaveBeenCalledWith('091823901283');
-            expect(mockNavigate).toHaveBeenCalledWith('/');
+            expect(mockNavigate).toHaveBeenCalledWith('/',  {"state": {"message": "Document was successfully removed."}});
         });
     });
 

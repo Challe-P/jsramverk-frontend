@@ -6,11 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
-export function NewForm() {
+export function NewForm({token}) {
     const navigate = useNavigate();
     const [value, setValue] = useState('');
     const quillRef = useRef(null);
-
     const {
         register,
         handleSubmit,
@@ -19,9 +18,12 @@ export function NewForm() {
     } = useForm();
 
     const onSubmit = async (data) => {
+        console.log(token);
+        const response = await addOne(data, token);
+        let res = await response.json();
+        navigate("/id/" + res.insertedId, { state: { message: "Document successfully created!"}});
         data.content = quillRef.current.editor.getContents();
         console.log("Data: ", data);
-        const response = await addOne(data);
         const id = await response.json();
         console.log("Navigating to: /id/" + id);
         navigate("/id/" + id);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { getOne } from "../models/fetch.js";
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import UpdateDoc from '../update-doc.jsx';
 import { runCode } from "../models/exec";
 
@@ -9,6 +9,7 @@ import { runCode } from "../models/exec";
 jest.mock('react-router-dom', () => ({
     useParams: jest.fn(),
     useNavigate: jest.fn(),
+    useLocation: jest.fn(),
 }));
 
 // Mock the getOne function
@@ -32,6 +33,7 @@ describe('Tests code editor', () => {
     });
 
     test('tests that the run code function gets called correctly', async () => {
+        useLocation.mockReturnValue({state: "test"});
         useParams.mockReturnValue({id: "091823901283"});
         const mockResponse = {title: "Fake title", content: "console.log('Test')", mode: "code"};
         getOne.mockResolvedValue(mockResponse);

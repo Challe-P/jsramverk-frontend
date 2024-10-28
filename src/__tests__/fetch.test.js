@@ -76,7 +76,7 @@ describe('Test suite for fetch module', () => {
             json: jest.fn().mockResolvedValue({data: [{id: "thisIsACoolun1qu3ID", title: "A title", content: "some content"}]})
         });
         const response = await getOne(id);
-        expect(fetch).toHaveBeenCalledWith(`${baseURL}/doc/${id}`);
+        expect(fetch).toHaveBeenCalledWith(`${baseURL}/doc/${id}`, {"headers": {"auth-token": undefined}, "method": "GET"});
         expect(response).toEqual({id: "thisIsACoolun1qu3ID", title: "A title", content: "some content"});
     });
 
