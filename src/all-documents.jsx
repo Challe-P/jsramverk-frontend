@@ -22,6 +22,7 @@ export default function AllDocuments({token, setToken}) {
             const fetchData = async () => {
                     try {
                         const docs = await getAll(token);
+
                         setDocs(docs.data);
                     } catch (error) {
                         console.error(error);
@@ -35,8 +36,7 @@ export default function AllDocuments({token, setToken}) {
                 <Link to={'/id/' + doc._id}>{doc.title}</Link>
                 <DocContent doccontent={doc.content} />
             </li>
-        );
-        
+        );        
         const content = (docs.length) ? <ul className="docs">{docItems}</ul> : <h3>Create some new documents.</h3>;
 
         return(

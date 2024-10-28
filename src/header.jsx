@@ -13,8 +13,7 @@ function Header({token, setToken}) {
     return (
         <header>
             {
-                <div className="top">
-                    
+                <div className="top">                    
                     <Link to="/"><img className="logo" src='./logo192.png' alt="" /></Link>
                     <div className="nav">
                         <Link to="/"><h1>Home</h1></Link>

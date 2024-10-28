@@ -1,8 +1,11 @@
+
 import { useState } from 'react';
+import React from 'react';
 import {
     BrowserRouter as Router,
     Routes,
     Route,
+    Link
 } from "react-router-dom";
 
 // Import React components
@@ -20,7 +23,6 @@ import './App.css';
 export default function App() {
     const basename = process.env.NODE_ENV === 'production' ? "/~alpt22/editor" : "";
     const [token, setToken] = useState(sessionStorage.getItem("token"));
-
     return (    
         <Router basename={basename}>
 
@@ -37,7 +39,6 @@ export default function App() {
                     <Route path="/id/:id" element={<UpdateDoc token={token} setToken={setToken} />} />
 
                     <Route path="/new" element={<NewDoc token={token} setToken={setToken} />} />
-
                 </Routes>
                 <Footer />
             </div>

@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "/~alpt22/editor",
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.108",
@@ -13,8 +14,14 @@
     "mailgun": "^0.5.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-quill": "^2.0.0",
+    "@uiw/react-codemirror": "^4.23.5",
+    "codemirror": "^6.0.1",
+    "globals": "^15.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-quill-new": "^3.3.2",
     "react-scripts": "^5.0.1",
+    "socket.io-client": "^4.8.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
@@ -56,5 +63,10 @@
     "react-router-dom": "^6.26.2",
     "react-test-renderer": "^18.3.1",
     "style-loader": "^4.0.0"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(react-quill-new|quill|lodash-es|parchment)/)"
+    ]
   }
 }

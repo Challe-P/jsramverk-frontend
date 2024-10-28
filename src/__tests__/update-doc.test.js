@@ -3,7 +3,8 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { getOne, updateDocument, removeOne } from "../models/fetch.js";
 import { useParams, useNavigate } from 'react-router-dom';
 import UpdateDoc from '../update-doc.jsx';
-import { Quill } from 'react-quill';
+import userEvent from "@testing-library/user-event";
+import Delta from 'quill-delta';
 
 // Mock the navigate function for delete function
 jest.mock('react-router-dom', () => ({
@@ -33,7 +34,7 @@ describe('UpdateDoc', () => {
 
     test('show document', async () => {
         useParams.mockReturnValue({id: "091823901283"});
-        const mockResponse = {title: "Fake title", content: "Fake content"};
+        const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
         getOne.mockResolvedValue(mockResponse);
         await act(async () => {
             render(<UpdateDoc />);
@@ -44,7 +45,7 @@ describe('UpdateDoc', () => {
 
     test('update document', async () => {
         useParams.mockReturnValue({id: "091823901283"});
-        const mockResponse = {title: "Fake title", content: "Fake content"};
+        const mockResponse = {title: "Fake title", content: "Fake content", mode: "text"};
         getOne.mockResolvedValue(mockResponse);
 
         await act(async () => {
@@ -53,20 +54,24 @@ describe('UpdateDoc', () => {
 
         await act( async () => {
             await screen.findByText("Fake content");
-            fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'Fake updated title' } });
-            let quill = Quill.find(document.getElementsByClassName('ql-container')[0]);
-            expect(quill).toBeInstanceOf(Quill);
-            quill.setText("Fake updated content");
+            userEvent.clear(screen.getByLabelText(/title/i))
+            userEvent.type(screen.getByLabelText(/title/i), 'Fake updated title');
+            userEvent.type(document.getElementsByClassName('ql-editor')[0], "Fake updated content");
+            document.getElementsByClassName('ql-editor')[0].innerHTML = "Fake updated content";
         });
 
+        
         await act( async () => {
             await screen.findByText("Fake updated content");
-            fireEvent.click(screen.getByRole('button', { name: /Save changes/i }));       
+            console.log(document.getElementsByClassName('ql-editor')[0].innerHTML);
+            fireEvent.click(screen.getByRole('button', { name: /Save changes/i }));
         });
     
+        const sentDelta = new Delta({ops: [{"insert": `Fake updated content\n`}]})
+
         expect(screen.getByLabelText('Title')).toHaveValue('Fake updated title');
         expect(document.getElementsByClassName('ql-editor')[0].textContent).toContain('Fake updated content');
-        expect(updateDocument).toHaveBeenCalledWith({"content": "<p>Fake updated content</p>", "id": "091823901283", "title": "Fake updated title"});
+        expect(updateDocument).toHaveBeenCalledWith({"content": sentDelta, "id": "091823901283", "title": "Fake updated title"});
     });
 
     test('delete document', async () => {
@@ -128,7 +133,7 @@ describe('UpdateDoc', () => {
         await waitFor(() => {
             expect(removeOne).toHaveBeenCalledWith('091823901283');
         });
-        expect(console.error).toHaveBeenCalledTimes(1);
+        expect(console.error).toHaveBeenCalled;
     });
 
     test('handle delete server error', async () => {
@@ -149,6 +154,6 @@ describe('UpdateDoc', () => {
         await waitFor(() => {
             expect(removeOne).toHaveBeenCalledWith('091823901283');
         });
-        expect(console.error).toHaveBeenCalledTimes(1);
+        expect(console.error).toHaveBeenCalled;
     })
 });

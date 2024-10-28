@@ -1,26 +1,33 @@
-import { useState } from 'react';
+// This needs to be removed. The route should just call addOne and then send you to the newly created document.
+import React, { useState, useRef } from 'react';
 import { useForm } from "react-hook-form";
 import { addOne } from "../models/fetch";
 import { useNavigate } from 'react-router-dom';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 
-export function NewForm({token, setToken}) {
+export function NewForm() {
     const navigate = useNavigate();
     const [value, setValue] = useState('');
-
+    const quillRef = useRef(null);
     const {
         register,
         handleSubmit,
+        watch,
         formState: { errors },
     } = useForm();
 
     const onSubmit = async (data) => {
         console.log(token);
-        data.content = value;
         const response = await addOne(data, token);
         let res = await response.json();
         navigate("/id/" + res.insertedId, { state: { message: "Document successfully created!"}});
+        data.content = quillRef.current.editor.getContents();
+        console.log("Data: ", data);
+        const response = await addOne(data);
+        const id = await response.json();
+        console.log("Navigating to: /id/" + id);
+        navigate("/id/" + id);
     };
 
     return (
@@ -44,7 +51,7 @@ export function NewForm({token, setToken}) {
             />
 
             {/* include validation with required or other standard HTML validation rules */}
-            <ReactQuill ReactQuill theme="snow" id='content' value={value} onChange={setValue} />
+            <ReactQuill ReactQuill theme="snow" id='content' value={value} onChange={setValue} ref={quillRef} />
             <input type="submit" value="Create document" />
         </form>
     );
