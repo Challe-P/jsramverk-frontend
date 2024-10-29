@@ -33,7 +33,7 @@ li {
   margin-bottom: 20px;
 }
 
-li a {
+li h3 {
   font-size: 1.6rem;
 }
 
@@ -88,6 +88,7 @@ input, label {
   margin: 5px 5px;
 }
 
-/* label {
-  margin: 5px 5px;
-} */
+.docs a {
+  color: unset;
+  text-decoration: none;
+}

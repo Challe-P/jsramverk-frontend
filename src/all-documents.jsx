@@ -13,46 +13,43 @@ export default function AllDocuments({token}) {
     }, [navigate, token]);
 
     const [docs, setDocs] = useState([]);
+    const [docItems, setItems] = useState([]);
     const location = useLocation();
     const message = location.state ? location.state.message : "";
 
-    try {
-        useEffect(() => {
-            const fetchData = async () => {
-                    try {
-                        const docs = await getAll(token);
-                        console.log(docs);
-                        setDocs(docs.data);
-                    } catch (error) {
-                        console.error(error);
-                    }
-                };
-            fetchData();
-        }, [token]);
-        const docItems = docs.map(doc =>
-            <li key={doc._id}>
-                <Link to={'/id/' + doc._id}>{doc.title}</Link>
-                <DocContent doccontent={doc.content} />
-            </li>
-        );        
+    useEffect(() => {
+        const fetchData = async () => {
+                try {
+                    const docs = await getAll(token);
+                    setDocs(docs.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+        fetchData();
+    }, [token]);
 
-        const content = (docs.length) ? <ul className="docs">{docItems}</ul> : <h3>Create some new documents.</h3>;
+    useEffect(() => {
+        if (docs) {
+            setItems(docs.map(doc =>
+                <li key={doc._id}>
+                <Link to={'/id/' + doc._id}>
+                    <h3>{doc.title}</h3>
+                    <DocContent 
+                        doccontent={doc.content}
+                        mode={doc.mode} />
+                </Link>
+                </li>
+            ));    
+        }
+    }, [docs]);
 
-        return(
-            <div>
-                <h1>{message}</h1>
-                {content}
-            </div>
-        );
+    const content = (docs.length) ? <ul className="docs">{docItems}</ul> : <h3>Create some new documents.</h3>;
 
-    } catch (error) {
-        console.error("An error occurred.", error);
-        return (
-            <div className="error">
-                <p>An error occured.</p>
-                <p>{error}</p>
-            </div>
-        );
-    }
+    return(
+        <div>
+            <h1>{message}</h1>
+            {content}
+        </div>
+    );
 }
-
