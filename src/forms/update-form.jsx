@@ -84,8 +84,7 @@ export function UpdateForm({token}) {
     const handleDelete = async () => {
         // Kanske en alert-ruta?
         try {
-            const response = await removeOne(id);
-            console.log(response);
+            const response = await removeOne(id, token);
             
             if (response.status === 200) {
                 navigate("/", { state: { message: "Document was successfully removed."}});

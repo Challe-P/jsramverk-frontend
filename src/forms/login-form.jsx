@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import auth from '../models/auth.js';
 
-export function LoginForm({token, setToken}) {
+export function LoginForm({setToken}) {
     const navigate = useNavigate();
 
     const {
