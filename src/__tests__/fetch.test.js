@@ -49,19 +49,20 @@ describe('Test suite for fetch module', () => {
     
     test('Testing addOne, should return an ID', async () => {
         const data = {
-            title: "A title",
-            content: "some content"
-        };
-
+            title: "New document",
+            content: "",
+            mode: "text"
+        }
         fetch.mockResolvedValueOnce({
             status: 200,
             json: jest.fn().mockResolvedValue("thisIsACoolun1qu3ID")
         });
-        const response = await addOne(data);
+        const response = await addOne("poadwa890yd");
 
         expect(fetch).toHaveBeenCalledWith(`${baseURL}/`, {
             body: JSON.stringify(data),
             headers: {
+                'auth-token': "poadwa890yd",
                 'content-type': 'application/json'
             },
             method: 'POST',

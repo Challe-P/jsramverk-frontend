@@ -71,7 +71,7 @@ export function UpdateForm({token}) {
             data.content = delta;
         }
         data.title = title;
-        console.log(data);
+        data.mode = editorMode;
         const response = await updateDocument(data, token);
         if (response.status === 200) {
             console.log(response);

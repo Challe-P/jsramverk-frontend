@@ -77,7 +77,11 @@ describe('UpdateDoc', () => {
 
         expect(screen.getByLabelText('Title')).toHaveValue('Fake updated title');
         expect(document.getElementsByClassName('ql-editor')[0].textContent).toContain('Fake updated content');
-        expect(updateDocument).toHaveBeenCalledWith({"content": sentDelta, "id": "091823901283", "email": "", "title": "Fake updated title"}, undefined);
+        expect(updateDocument).toHaveBeenCalledWith({"content": sentDelta,
+            "id": "091823901283",
+            "email": "",
+            "title": "Fake updated title",
+            "mode": "text"}, undefined);
     });
 
     test('delete document', async () => {

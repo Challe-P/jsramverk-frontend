@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, cleanup } from '@testing-library/react';
 import App from '../App';
 import { getAll } from '../models/fetch';
 
@@ -8,17 +8,39 @@ jest.mock("../models/fetch", () => ({
 }));
 
 describe('Tests main app functionality', ()  => {
-
+    
     beforeAll(() => {
         jest.spyOn(console, 'error').mockImplementation(jest.fn());
         jest.spyOn(console, 'log').mockImplementation(jest.fn());
     });
 
+    afterEach(() =>{
+        cleanup();
+        jest.clearAllMocks();
+    });
+
     afterAll(() => {
-        window.sessionStorage.clear();
         global.console.log.mockRestore();
         global.console.error.mockRestore();
         jest.clearAllMocks();
+    });
+
+    test("should render all the users documents", async () => {
+        window.sessionStorage.setItem('token', "poawjdopajwopdj");
+        const mockResponse = { data: [
+            { title: "Fake title", content: "Fake content", _id: "7890872q4alksjf"}, 
+            { title: "A title", content: "Some content", _id: "789087iug2q4alksjf"}]};
+        getAll.mockResolvedValue(mockResponse);
+        await act(async () => {
+            render(<App />);
+        });
+        window.sessionStorage.clear();
+        await screen.findByText('Home'); // Change here if header is changed.
+        const links = screen.getAllByRole('link');
+        const linkFake = links.some(link => link.textContent === "Fake title");
+        const otherLink = links.some(link => link.textContent === "A title");
+        expect(linkFake).toBe(true);
+        expect(otherLink).toBe(true);        
     });
 
     test("renders and displays start screen, header and footer", async () => {
@@ -40,22 +62,5 @@ describe('Tests main app functionality', ()  => {
 
     // This test is weird. The fetchmock only works if no other test in the suite runs,
     // and even then the render page is wrong.
-    /*
-    test("should render all the users documents", async () => {
-        window.sessionStorage.setItem('token', "poawjdopajwopdj");
-        const mockResponse = { data: [
-            { title: "Fake title", content: "Fake content"}, 
-            { title: "A title", content: "Some content" }]};
-        getAll.mockResolvedValue(mockResponse);
-        
-        await render(<App url="/"/>);
-        await screen.findByText('Home'); // Change here if header is changed.
-        const links = screen.getAllByRole('link');
-        const linkFake = links.some(link => link.textContent === "Fake title");
-        const otherLink = links.some(link => link.textContent === "A title");
-        expect(linkFake).toBe(true);
-        expect(otherLink).toBe(true);        
-    });
-    */
-    
+
 });

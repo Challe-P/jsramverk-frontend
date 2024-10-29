@@ -33,6 +33,7 @@ export async function updateDocument(data, token) {
         "id": data.id,
         "title": data.title,
         "content": data.content,
+        "mode": data.mode,
     };
 
     const response = await fetch(`${baseURL}/update`, {
@@ -41,7 +42,7 @@ export async function updateDocument(data, token) {
             'content-type': 'application/json',
             'auth-token': token,
         },
-        method: 'POST', //PUT gives a 404
+        method: 'POST',
     });
 
     return response;
@@ -65,10 +66,11 @@ export async function shareDocument(data, token) {
     return response;
 }
 
-export async function addOne(data, token) {
+export async function addOne(token) {
     const body = {
-        "title": data.title,
-        "content": data.content
+        title: "New document",
+        content: "",
+        mode: "text",
     };
 
     const response = await fetch(`${baseURL}/`, {
