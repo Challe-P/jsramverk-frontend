@@ -104,7 +104,7 @@ describe('UpdateDoc', () => {
         });
 
         await waitFor(() => {
-            expect(removeOne).toHaveBeenCalledWith('091823901283');
+            expect(removeOne).toHaveBeenCalledWith('091823901283', undefined);
             expect(mockNavigate).toHaveBeenCalledWith('/',  {"state": {"message": "Document was successfully removed."}});
         });
     });
@@ -141,7 +141,7 @@ describe('UpdateDoc', () => {
         });
 
         await waitFor(() => {
-            expect(removeOne).toHaveBeenCalledWith('091823901283');
+            expect(removeOne).toHaveBeenCalledWith('091823901283', undefined);
         });
         expect(console.error).toHaveBeenCalled;
     });
@@ -162,7 +162,7 @@ describe('UpdateDoc', () => {
         });
 
         await waitFor(() => {
-            expect(removeOne).toHaveBeenCalledWith('091823901283');
+            expect(removeOne).toHaveBeenCalledWith('091823901283', undefined);
         });
         expect(console.error).toHaveBeenCalled;
     })
