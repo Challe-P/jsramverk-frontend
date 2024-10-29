@@ -30,9 +30,9 @@ export default function App() {
                 <Header token={token} setToken={setToken} />
                 <Routes>
 
-                    <Route path="/register" element={<Register />} />
+                    <Route path="/register" element={<Register setToken={setToken} />} />
 
-                    <Route path="/login" element={<Login token={token} setToken={setToken} />} />
+                    <Route path="/login" element={<Login setToken={setToken} />} />
 
                     <Route path="/" element={<AllDocuments token={token} />} />
 

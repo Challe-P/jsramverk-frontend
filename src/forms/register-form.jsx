@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import auth from '../models/auth.js';
 
-export function RegisterForm() {
+export function RegisterForm({setToken}) {
     const navigate = useNavigate();
 
     const {
@@ -12,13 +12,19 @@ export function RegisterForm() {
     } = useForm();
 
     const onSubmit = async (data) => {
-
         try {
             const result = await auth.register(data);
             if (result.status === 400) {
                 navigate("/register", { state: { message: result.message}});
             } else {
-                navigate("/login", { state: { message: "A new user was successfully registered!"}});
+                const res = await auth.login(data, setToken);
+                if (res.status === 200)
+                {
+                    navigate("/", { state: { message: "A new user was successfully registered!"}});
+                }
+                else {
+                    navigate("/login", { state: {message: result.message}});
+                }
             }
         } catch (err) {
             console.log("Error: ", err);

@@ -14,7 +14,7 @@ const auth = {
             headers: {
                 'content-type': 'application/json'
             },
-            method: 'POST', //PUT gives a 404
+            method: 'POST',
         });
     
         const res = await response.json();
@@ -23,20 +23,19 @@ const auth = {
     },
     
     login: async function login(data, setToken) {
-    
         const userBody = {
             "username": data.username,
             "password": data.password,
         };
-    
+
         const response = await fetch(`${baseURL}/login`, {
             body: JSON.stringify(userBody),
             headers: {
                 'content-type': 'application/json'
             },
-            method: 'POST', //PUT gives a 404
+            method: 'POST',
         });
-    
+
         const result = await response.json();
         sessionStorage.setItem("token", result.token);
         setToken(result.token);
