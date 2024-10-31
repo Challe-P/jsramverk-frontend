@@ -1,6 +1,6 @@
 import "./doc.css";
 import { RegisterForm } from './forms/register-form.jsx';
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 
 export default function Register({setToken}) {
     const location = useLocation();

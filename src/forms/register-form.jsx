@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
-import auth from '../models/auth.js';
+import { register as authRegister, login } from '../models/auth.js';
 
 export function RegisterForm({setToken}) {
     const navigate = useNavigate();
@@ -13,21 +13,22 @@ export function RegisterForm({setToken}) {
 
     const onSubmit = async (data) => {
         try {
-            const result = await auth.register(data);
+            const result = await authRegister(data);
             if (result.status === 400) {
                 navigate("/register", { state: { message: result.message}});
             } else {
-                const res = await auth.login(data, setToken);
+                const res = await login(data, setToken);
+                console.log(res)
                 if (res.status === 200)
                 {
                     navigate("/", { state: { message: "A new user was successfully registered!"}});
                 }
                 else {
-                    navigate("/login", { state: {message: result.message}});
+                    navigate("/login", { state: { message: result.message }});
                 }
             }
         } catch (err) {
-            console.log("Error: ", err);
+            console.error(err);
         }
     };
 
@@ -46,7 +47,7 @@ export function RegisterForm({setToken}) {
                 onInvalid={e => {
                     e.currentTarget.setCustomValidity("A username is required");
                 }}
-                onChange={e => {
+                onInput={e => {
                     e.currentTarget.setCustomValidity("");
                 }}
             />
@@ -62,7 +63,7 @@ export function RegisterForm({setToken}) {
                 onInvalid={e => {
                     e.currentTarget.setCustomValidity("An e-mail address is required");
                 }}
-                onChange={e => {
+                onInput={e => {
                     e.currentTarget.setCustomValidity("");
                 }}
             />
@@ -78,7 +79,7 @@ export function RegisterForm({setToken}) {
                 onInvalid={e => {
                     e.currentTarget.setCustomValidity("A password is required");
                 }}
-                onChange={e => {
+                onInput={e => {
                     e.currentTarget.setCustomValidity("");
                 }}
             />

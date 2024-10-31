@@ -1,8 +1,6 @@
 import { baseURL } from "../utils";
 
-const auth = {
-
-    register: async function register(data) {
+export async function register(data) {
         const userBody = {
             "username": data.username,
             "email": data.email,
@@ -20,9 +18,9 @@ const auth = {
         const res = await response.json();
 
         return res;
-    },
+    }
     
-    login: async function login(data, setToken) {
+export async function login(data, setToken) {
         const userBody = {
             "username": data.username,
             "password": data.password,
@@ -41,8 +39,5 @@ const auth = {
         setToken(result.token);
         console.log("Token is successfully set.");
     
-        return result;
-    },
-};
-
-export default auth;
+        return response;
+}

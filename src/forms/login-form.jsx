@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
-import auth from '../models/auth.js';
+import { login } from '../models/auth.js';
 
 export function LoginForm({setToken}) {
     const navigate = useNavigate();
@@ -13,10 +13,10 @@ export function LoginForm({setToken}) {
 
     const onSubmit = async (data) => {
         try {
-            await auth.login(data, setToken);
+            await login(data, setToken);
             navigate("/", { state: { message: "User was successfully logged in!"}})
         } catch (err) {
-            console.log("Error: ", err);
+            console.error(err);
         }
     };
 
@@ -27,33 +27,23 @@ export function LoginForm({setToken}) {
             <label htmlFor="username">Username</label>
             <input 
                 id="username"
-                aria-invalid={errors.name ? "true" : "false"} 
-                type="text" 
-                name="username" 
+                aria-invalid={errors.username ? "true" : "false"} 
+                type="text"
                 required={true}
                 {...register("username")} 
-                onInvalid={e => {
-                    e.currentTarget.setCustomValidity("A username is required");
-                }}
-                onChange={e => {
-                    e.currentTarget.setCustomValidity("");
-                }}
+                onInvalid={e => e.target.setCustomValidity("A username is required")}
+                onInput={e => e.target.setCustomValidity("")} 
             />
 
             <label htmlFor="password">Password</label>
             <input 
                 id="password"
-                aria-invalid={errors.name ? "true" : "false"} 
+                aria-invalid={errors.password ? "true" : "false"} 
                 type="password" 
-                name="password" 
                 required={true}
-                {...register("password")} 
-                onInvalid={e => {
-                    e.currentTarget.setCustomValidity("A password is required");
-                }}
-                onChange={e => {
-                    e.currentTarget.setCustomValidity("");
-                }}
+                {...register("password")}
+                onInvalid={e => e.target.setCustomValidity("A password is required")}
+                onInput={e => e.target.setCustomValidity("")}
             />
 
             {/* include validation with required or other standard HTML validation rules */}

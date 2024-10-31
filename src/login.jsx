@@ -1,6 +1,6 @@
 import "./doc.css";
 import { LoginForm } from './forms/login-form';
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 
 export default function Login({token, setToken}) {
 
