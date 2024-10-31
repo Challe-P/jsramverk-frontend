@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import "./doc.css";
 import { NewForm } from './forms/new-form.jsx';
 import { useEffect } from "react";

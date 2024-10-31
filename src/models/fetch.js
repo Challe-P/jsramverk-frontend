@@ -60,7 +60,7 @@ export async function shareDocument(data, token) {
             'content-type': 'application/json',
             'auth-token': token,
         },
-        method: 'POST', //PUT gives a 404
+        method: 'POST',
     });
 
     return response;
@@ -81,8 +81,9 @@ export async function addOne(token) {
         },
         method: 'POST',
     });
+    const res = await response.json();
 
-    return response;
+    return res;
 }
 
 export async function removeOne(id, token) {

@@ -8,8 +8,7 @@ export function NewForm({token}) {
     useEffect(() => {
         const createNewDoc = async () => {
             const response = await addOne(token);
-            let res = await response.json();
-            navigate("/id/" + res.insertedId, { state: { message: "Document successfully created!"}});
+            navigate("/id/" + response, { state: { message: "Document successfully created!"}});
         }
 
         createNewDoc();

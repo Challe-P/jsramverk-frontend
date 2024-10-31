@@ -1,4 +1,4 @@
-import { getAll, updateDocument, addOne, getOne, removeOne } from '../models/fetch';
+import { getAll, updateDocument, addOne, getOne, removeOne, shareDocument } from '../models/fetch';
 import { baseURL } from '../utils';
 
 // Mocking fetch to test module without network connections
@@ -7,6 +7,10 @@ global.fetch = jest.fn();
 describe('Test suite for fetch module', () => {
     beforeEach(() => {
         fetch.mockClear();
+    });
+
+    afterAll(() => {
+        jest.clearAllMocks();
     });
 
     test('Testing getAll. Should return some data.', async () => {
@@ -67,8 +71,7 @@ describe('Test suite for fetch module', () => {
             },
             method: 'POST',
             });
-        const id = await response.json();
-        expect(id).toMatch('thisIsACoolun1qu3ID')
+        expect(response).toMatch('thisIsACoolun1qu3ID')
     });
 
     test('Testing get one, should return some data', async () => {
@@ -95,16 +98,24 @@ describe('Test suite for fetch module', () => {
         method: 'POST',
         });
         expect(response.status).toBe(200);
-    })
-});
-
-/*
-export async function removeOne(id) {
-    const response = await fetch(`${baseURL}/delete`, {
-        body: JSON.stringify({'id': id}),
-        headers: {
-            'content-type': 'application/json'
-        },
-        method: 'POST',
     });
-    */
+
+    test("Testing share", async () => {
+        const id = "thisIsACoolun1qu3ID";
+        fetch.mockResolvedValueOnce({
+            json: jest.fn().mockResolvedValue({status: 200})
+        });
+        const sentBody = {
+            id: id, 
+            email: "testbuddy@mail.com"
+        }
+        await shareDocument(sentBody, "c001t0k3n");
+        expect(fetch).toHaveBeenCalledWith(`${baseURL}/share`, {
+            body: JSON.stringify(sentBody),
+            headers: {
+                "auth-token": "c001t0k3n",
+                "content-type": "application/json"
+        },
+        method: "POST"});
+    });
+});

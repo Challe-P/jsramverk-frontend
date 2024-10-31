@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import { getOne, updateDocument, removeOne } from "../models/fetch.js";
+import { getOne, updateDocument, removeOne, shareDocument } from "../models/fetch.js";
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import UpdateDoc from '../update-doc.jsx';
 import userEvent from "@testing-library/user-event";
@@ -18,6 +18,7 @@ jest.mock("../models/fetch", () => ({
     getOne: jest.fn(),
     updateDocument: jest.fn(),
     removeOne: jest.fn(),
+    shareDocument: jest.fn()
 }));
 
 describe('UpdateDoc', () => {
@@ -107,6 +108,26 @@ describe('UpdateDoc', () => {
             expect(removeOne).toHaveBeenCalledWith('091823901283', undefined);
             expect(mockNavigate).toHaveBeenCalledWith('/',  {"state": {"message": "Document was successfully removed."}});
         });
+    });
+
+    test('tests share document form', async () => {
+        shareDocument.mockResolvedValue({status: 200});
+        useParams.mockReturnValue({id: "091823901283"});
+
+        const mockNavigate = jest.fn();
+        useNavigate.mockReturnValue(mockNavigate);
+
+        await act(async () => {
+            render(<UpdateDoc />);
+        });
+
+        await act(async () => {
+            userEvent.type(document.getElementById("email"), "testbuddy@test.com");
+            fireEvent.click(screen.getByRole('button', { name: /Share document/i }));
+        });
+
+        expect(shareDocument).toHaveBeenCalledWith({email: "testbuddy@test.com", "id": "091823901283"}, undefined);
+        expect(mockNavigate).toHaveBeenCalledWith("#", { state: { message: `Document is now shared with testbuddy@test.com!`}})
     });
 
     test('failed getting of document', async () => {
