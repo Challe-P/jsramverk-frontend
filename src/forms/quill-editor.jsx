@@ -1,13 +1,31 @@
 import React from 'react';
-import ReactQuill from 'react-quill-new';
+import ReactQuill, { Quill } from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import Delta from 'quill-delta';
 import { useEffect, useRef } from "react";
+import CommentBlot from './comment-blot';
 
 export function QuillEditor({content, setContent, delta,
     setDelta, deltaIsLatest, setDeltaIsLatest, setEditorMode,
     title, setTitle, socket, id}) {
     const quillRef = useRef(null);
+
+    // Define quill toolbar options
+    const modules = {
+        toolbar: {
+            container: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                ['link'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['clean'],
+                ['comment']
+            ]
+        },
+    };
+
+    // Registrers commentBlot in quill
+    Quill.register(CommentBlot);
 
     // Loads the data sent from parent properly
     useEffect(() =>
@@ -68,8 +86,21 @@ export function QuillEditor({content, setContent, delta,
             isLatest = true;
         };
 
+        function commentHandler() {
+            const selection = quillRef.current.getEditor().getSelection();
+            if (selection) {
+                // Uses the browsers built in prompt. Maybe not super pretty?
+                const userComment = prompt("Skriv din kommentar:");
+                quillRef.current.getEditor().formatText(selection.index, selection.length, 'comment', userComment, "user");
+            }
+        }
+
+        const commentButton = document.getElementsByClassName('ql-comment')[0];
+        commentButton.addEventListener('click', commentHandler)
+
         socket.on("doc", onDoc);
         return () => {
+            commentButton.removeEventListener('click', commentHandler)
             socket.off("doc", onDoc);
         }
     }, [socket]);
@@ -84,6 +115,7 @@ export function QuillEditor({content, setContent, delta,
     <ReactQuill 
       ref={quillRef}
       theme="snow"
+      modules={modules}
     />
     )
 }
