@@ -11,7 +11,22 @@ class CommentBlot extends Inline {
     static create(value) {
         const node = super.create();
         node.setAttribute('comment', value);
-        node.setAttribute('title', value); // Tooltip med kommentaren
+        
+        function editComment(event) {
+            const newComment = prompt('Redigera kommentar:', event.target.getAttribute('comment'));
+            if (newComment === null) {
+                removeComment();
+                return;
+            } 
+            event.target.setAttribute('comment', newComment);
+        }
+        
+        function removeComment() {
+            node.classList.remove('comment');
+            node.removeAttribute('comment');
+        }
+
+        node.addEventListener('click', editComment);
         return node;
     }
 

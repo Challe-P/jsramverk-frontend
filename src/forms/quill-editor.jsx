@@ -24,8 +24,10 @@ export function QuillEditor({content, setContent, delta,
         },
     };
 
-    // Registrers commentBlot in quill
+    // Registers commentBlot in quill
     Quill.register(CommentBlot);
+    // Removes warning about commentBlot
+    Quill.debug('error');
 
     // Loads the data sent from parent properly
     useEffect(() =>
@@ -91,7 +93,11 @@ export function QuillEditor({content, setContent, delta,
             if (selection) {
                 // Uses the browsers built in prompt. Maybe not super pretty?
                 const userComment = prompt("Skriv din kommentar:");
-                quillRef.current.getEditor().formatText(selection.index, selection.length, 'comment', userComment, "user");
+                // Add username to comment? Timestamp? Unique id?
+                quillRef.current.getEditor().formatText(selection.index, selection.length, 'comment',
+                    userComment, "user");
+                //const commentSpan = document.getElementById(commentId);
+                //commentSpan.addEventListener('click', editComment);
             }
         }
 
