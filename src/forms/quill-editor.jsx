@@ -1,13 +1,39 @@
 import React from 'react';
-import ReactQuill from 'react-quill-new';
+import ReactQuill, { Quill } from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import Delta from 'quill-delta';
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import CommentBlot from '../quill-classes/comment-blot';
+import { CommentPopup } from '../minor-components/comment-popup';
 
 export function QuillEditor({content, setContent, delta,
     setDelta, deltaIsLatest, setDeltaIsLatest, setEditorMode,
     title, setTitle, socket, id}) {
     const quillRef = useRef(null);
+    const [selection, setSelection] = useState(null);
+    const [showPopup, setShowPopup] = useState(false);
+    const [commentText, setCommentText] = useState("");
+    const [currentBlotNode, setCurrentBlotNode] = useState(null);
+    const [position, setPosition] = useState([]);
+
+    // Define quill toolbar options
+    const modules = {
+        toolbar: {
+            container: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                ['link'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['clean'],
+                ['comment']
+            ]
+        },
+    };
+
+    // Registers commentBlot in quill
+    Quill.register(CommentBlot);
+    // Removes warning about commentBlot
+    Quill.debug('error');
 
     // Loads the data sent from parent properly
     useEffect(() =>
@@ -68,9 +94,22 @@ export function QuillEditor({content, setContent, delta,
             isLatest = true;
         };
 
+        function commentHandler(event) {
+            setPosition([event.clientX, event.clientY])
+            const selection = quillRef.current.getEditor().getSelection();
+            if (selection && selection.length != 0) {
+                setSelection(selection);
+                setShowPopup(true);
+            }
+        }
+        const commentButton = document.getElementsByClassName('ql-comment')[0];
+        commentButton.addEventListener('click', commentHandler)
+
         socket.on("doc", onDoc);
+
         return () => {
             socket.off("doc", onDoc);
+            commentButton.removeEventListener('click', commentHandler);
         }
     }, [socket]);
 
@@ -80,10 +119,56 @@ export function QuillEditor({content, setContent, delta,
         }
     }, [title]);
 
+    // Functions for comment handling
+    const onSave = (comment) => {
+        if (currentBlotNode) {
+            currentBlotNode.setAttribute('comment', comment);
+            if (!comment) {
+                currentBlotNode.removeAttribute('class')
+                currentBlotNode.removeAttribute('comment');
+            }
+        } else {
+        quillRef.current.getEditor().formatText(selection.index, selection.length, 'commentblot',
+            comment, "user");
+        }
+        setShowPopup(false);
+        setCurrentBlotNode(null);
+        setCommentText("");
+    };
+
+    const openPopup = (comment, blotNode, position) => {
+        setPosition(position)
+        setCommentText(comment);
+        setCurrentBlotNode(blotNode);
+        setShowPopup(true);
+    };
+
+    const onClose = () => {
+        setCurrentBlotNode("");
+        setCommentText("");
+        setShowPopup(false);
+    }
+
+    useEffect(() => {
+        CommentBlot.setPopupFunction(openPopup);
+    }, []);
+
     return (
-    <ReactQuill 
-      ref={quillRef}
-      theme="snow"
-    />
+    <div>
+        <ReactQuill 
+        ref={quillRef}
+        theme="snow"
+        modules={modules}
+        />
+        {showPopup && (
+            <CommentPopup
+                value={commentText}
+                setValue={setCommentText}
+                onSave={onSave}
+                onClose={onClose}
+                position={position}
+            />
+        )}
+    </div>
     )
 }

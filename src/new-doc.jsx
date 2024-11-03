@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./doc.css";
-import { NewForm } from './forms/new-form.jsx';
+import { NewPath } from './minor-components/new-path.jsx';
 import { useEffect } from "react";
 
 export default function NewDoc({token, setToken} ) {
@@ -15,6 +15,6 @@ export default function NewDoc({token, setToken} ) {
     }, [navigate, token]);
 
     return (
-        <NewForm token={token} setToken={setToken} />
+        <NewPath token={token} setToken={setToken} />
     );
 }

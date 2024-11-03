@@ -119,7 +119,7 @@ export function UpdateForm({token}) {
     }
     return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
-      <div>
+      <div className='container'>
               <h1>{message}</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
             <label htmlFor="title">Title</label>
@@ -153,11 +153,11 @@ export function UpdateForm({token}) {
             ) 
             }
             <input type="text" name="id" hidden defaultValue={id} {...register("id")}/>
-            <input type="submit" value="Save changes" />
-            <button type="button" onClick={handleDelete}>Delete document</button>
-            <div>
-                <button type="button" onClick={() => setEditorMode("text")}>Text Editor</button>
-                <button type="button" onClick={() => setEditorMode("code")}>Code Editor</button>
+            <div className='form-buttons'>
+                    <button type="button" onClick={handleDelete}>Delete document</button>
+                    <button type="submit">Save changes</button>
+                    <button type="button" onClick={() => setEditorMode("text")}>Text Editor</button>
+                    <button type="button" onClick={() => setEditorMode("code")}>Code Editor</button>
             </div>
         </form>
         <form onSubmit={handleSubmit(handleShare)}>
