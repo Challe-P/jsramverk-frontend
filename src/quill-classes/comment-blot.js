@@ -13,30 +13,16 @@ class CommentBlot extends Inline {
 
     static create(value) {
         const node = super.create();
-        node.setAttribute('comment', value);
-        
-        /*
-        function editComment(event) {
-            const newComment = prompt('Redigera kommentar:', event.target.getAttribute('comment'));
-            if (newComment === null || newComment === "") {
-                removeComment();
-                return;
-            } 
-            event.target.setAttribute('comment', newComment);
-        }
-        */
-        
-        function removeComment() {
-            node.classList.remove('comment');
-            node.removeAttribute('comment');
-        }
 
+        node.setAttribute('comment', value);
         node.addEventListener('click', (event) => {
             if (this.openPopup) {
                 const currentComment = event.target.getAttribute('comment');
-                this.openPopup(currentComment, node);
+                const position = [event.clientX, event.clientY]
+                this.openPopup(currentComment, node, position);
             }
         });
+
         return node;
     }
 

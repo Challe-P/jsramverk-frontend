@@ -1,4 +1,6 @@
 form {
+    width: 70%;
+    align-self: center;
     padding: 2rem;
     border-radius: 15px;
     background-color: rgb(236, 229, 216);
@@ -65,4 +67,54 @@ form {
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
+}
+
+.form-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    button {
+        width: 40%;
+    }
+    :nth-child(even) {
+        justify-self: end;
+    }
+}
+
+.comment-popup {
+    max-width: 60%;
+    padding: 10px;
+    position: absolute;
+    background-color: rgb(236, 229, 216);
+    display: flex;
+    flex-direction: column;
+
+    .comment-header {
+        justify-content: space-between;
+        display: flex;
+        * {
+            align-self: flex-start;
+            margin: 0;
+        }
+    }
+
+    border: solid 1px;
+    border-radius: 10px;
+    box-shadow: 3px 3px 3px 3px #333;
+
+    #comment-input {
+        margin: 5px 0px;
+    }
+
+    .popup-buttons {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

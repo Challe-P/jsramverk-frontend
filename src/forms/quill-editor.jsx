@@ -14,6 +14,7 @@ export function QuillEditor({content, setContent, delta,
     const [showPopup, setShowPopup] = useState(false);
     const [commentText, setCommentText] = useState("");
     const [currentBlotNode, setCurrentBlotNode] = useState(null);
+    const [position, setPosition] = useState([]);
 
     // Define quill toolbar options
     const modules = {
@@ -93,7 +94,8 @@ export function QuillEditor({content, setContent, delta,
             isLatest = true;
         };
 
-        function commentHandler() {
+        function commentHandler(event) {
+            setPosition([event.clientX, event.clientY])
             const selection = quillRef.current.getEditor().getSelection();
             if (selection && selection.length != 0) {
                 setSelection(selection);
@@ -124,7 +126,7 @@ export function QuillEditor({content, setContent, delta,
             if (!comment) {
                 currentBlotNode.removeAttribute('class')
                 currentBlotNode.removeAttribute('comment');
-            }            
+            }
         } else {
         quillRef.current.getEditor().formatText(selection.index, selection.length, 'commentblot',
             comment, "user");
@@ -134,11 +136,18 @@ export function QuillEditor({content, setContent, delta,
         setCommentText("");
     };
 
-    const openPopup = (comment, blotNode) => {
+    const openPopup = (comment, blotNode, position) => {
+        setPosition(position)
         setCommentText(comment);
         setCurrentBlotNode(blotNode);
         setShowPopup(true);
     };
+
+    const onClose = () => {
+        setCurrentBlotNode("");
+        setCommentText("");
+        setShowPopup(false);
+    }
 
     useEffect(() => {
         CommentBlot.setPopupFunction(openPopup);
@@ -156,7 +165,8 @@ export function QuillEditor({content, setContent, delta,
                 value={commentText}
                 setValue={setCommentText}
                 onSave={onSave}
-                onClose={() => setShowPopup(false)}
+                onClose={onClose}
+                position={position}
             />
         )}
     </div>
