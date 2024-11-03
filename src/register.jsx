@@ -7,7 +7,7 @@ export default function Register({setToken}) {
     const message = location.state ? location.state.message : "";
 
     return (
-        <div>
+        <div className="container">
             <h1>{message}</h1>
             <RegisterForm setToken={setToken}/>
         </div>

@@ -8,7 +8,7 @@ export default function Login({token, setToken}) {
     const message = location.state ? location.state.message : "";
 
     return (
-        <div>
+        <div className="container">
             <h1>{message}</h1>
             <LoginForm token={token} setToken={setToken} />   
         </div>
