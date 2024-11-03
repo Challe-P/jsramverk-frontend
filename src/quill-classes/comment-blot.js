@@ -3,30 +3,40 @@ import ReactQuill, { Quill } from 'react-quill-new';
 const Inline = Quill.import('blots/inline');
 
 class CommentBlot extends Inline {
-    static blotName = 'comment'; // Namn på bloten
-    static tagName = 'span'; // HTML-taggen vi vill använda
-    static className = 'comment'; // Klass för CSS
+    static blotName = 'commentblot';
+    static tagName = 'span';
+    static className = 'comment';
 
-    // Metod för att sätta attribut (ex. kommentaren)
+    static setPopupFunction(openPopupFunc) {
+        this.openPopup = openPopupFunc;
+    }
+
     static create(value) {
         const node = super.create();
         node.setAttribute('comment', value);
         
+        /*
         function editComment(event) {
             const newComment = prompt('Redigera kommentar:', event.target.getAttribute('comment'));
-            if (newComment === null) {
+            if (newComment === null || newComment === "") {
                 removeComment();
                 return;
             } 
             event.target.setAttribute('comment', newComment);
         }
+        */
         
         function removeComment() {
             node.classList.remove('comment');
             node.removeAttribute('comment');
         }
 
-        node.addEventListener('click', editComment);
+        node.addEventListener('click', (event) => {
+            if (this.openPopup) {
+                const currentComment = event.target.getAttribute('comment');
+                this.openPopup(currentComment, node);
+            }
+        });
         return node;
     }
 
