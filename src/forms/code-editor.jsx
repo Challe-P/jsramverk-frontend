@@ -57,11 +57,14 @@ export function CodeEditor({ content, setContent, setDelta, setDeltaIsLatest, ti
                     extensions={[javascript({jsx: true})]} 
                     onChange={onChange}
                 />
-                <button type="button" onClick={sendCode}>Run code</button>
-                <div>
+                <button className='code-button' type="button" onClick={sendCode}>Run code</button>
+
+                    {codeOutput && <div>
+                        <h3>Code output</h3>
                     <pre className="code-output">
                         {codeOutput}
                     </pre>
-                </div>
+                    </div>
+                }
             </div>;
 }
