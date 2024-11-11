@@ -8,7 +8,7 @@ export function NewPath({token}) {
     useEffect(() => {
         const createNewDoc = async () => {
             const response = await addOne(token);
-            navigate("/id/" + response, { state: { message: "Document successfully created!"}});
+            navigate("/id/" + response.insertedId, { state: { message: "Document successfully created!"}});
         }
 
         createNewDoc();
