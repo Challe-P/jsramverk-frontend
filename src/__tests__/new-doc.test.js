@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { addOne } from "../models/fetch.js";
 import { useNavigate } from 'react-router-dom';
 import NewDoc from '../new-doc.jsx';
-import userEvent from "@testing-library/user-event";
 
 jest.mock('react-router-dom', () => ({
     useNavigate: jest.fn()
@@ -15,12 +14,11 @@ jest.mock("../models/fetch", () => ({
 }));
 
 describe('Tests new doc route.', () => {
-
+    
     afterAll(() => {
         jest.clearAllMocks();
     });
-
-
+   
     test('test route without token', async () => {
         const mockNavigate = jest.fn();
         useNavigate.mockReturnValue(mockNavigate);
@@ -34,16 +32,17 @@ describe('Tests new doc route.', () => {
         const mockNavigate = jest.fn();
         useNavigate.mockReturnValue(mockNavigate);
 
-        const mockResponse = "90qwa8yda8912";
+        const mockResponse = {
+            acknowledged: true,
+            insertedId: "90qwa8yda8912" };
         addOne.mockResolvedValue(mockResponse);
 
         await act(async () => {
             render(<NewDoc {...{ token: "poawjdopajwopdj" }} />);
         });
-
-        await waitFor(() => {
-            expect(addOne).toHaveBeenCalledWith('poawjdopajwopdj');
-            expect(mockNavigate).toHaveBeenCalledWith('/id/90qwa8yda8912',  {"state": {"message": "Document successfully created!"}});
-        });
+        expect(addOne).toHaveBeenCalledWith('poawjdopajwopdj');
+        expect(mockNavigate).toHaveBeenCalledWith('/id/90qwa8yda8912',  {"state": {"message": "Document successfully created!"}});
     });
+
+
 });

@@ -11,8 +11,9 @@ export default function NewDoc({token, setToken} ) {
         if (!token) { //Changed from auth.token
             navigate('/login', { state: { message: "Log in to create documents."}});    
         }
-        
     }, [navigate, token]);
+
+    if (!token) return null;
 
     return (
         <NewPath token={token} setToken={setToken} />
